@@ -29,6 +29,17 @@
         						android:hint="输入姓名查询数据库"/>
                         </TableRow>
                         
+						<TableRow 
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal" >
+                             <EditText android:id="@+id/et_serverIP"
+        						android:layout_width="match_parent"
+        						android:layout_height="wrap_content"
+        						android:layout_span="3"
+        						android:hint="输入服务器IP地址，例如101.5.238.252"/>
+                        </TableRow>
+						
                        <TableRow 
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"

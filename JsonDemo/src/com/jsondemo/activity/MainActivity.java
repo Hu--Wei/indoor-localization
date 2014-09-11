@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
 	private MyTask mTask;
 	private InputTask inTask;
 	private WifiTask wifiTask;
+	private EditText serverIP;
 	
 	private EditText inName;
 	private EditText inAge;
@@ -49,7 +50,6 @@ public class MainActivity extends Activity {
 	private Button inSubmit;
 	
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +63,7 @@ public class MainActivity extends Activity {
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
+		serverIP = (EditText) findViewById(R.id.et_serverIP);
 		
 		
 		inName=(EditText) findViewById(R.id.editname);
@@ -128,7 +129,7 @@ public class MainActivity extends Activity {
 			protected String doInBackground(String... params) {	
 				//通过HttpPost连接servlet
 				HttpClient hc = new DefaultHttpClient();
-				String address = "http://101.5.162.21:8080/ServerJsonDemo/servlet/JsonServlet";
+				String address = "http://" + (serverIP).getText().toString() + ":8080/servlet/JsonServlet";
 				HttpPost hp = new HttpPost(address);
 				String name = (inName).getText().toString();
 				String age = (inAge).getText().toString();
@@ -181,7 +182,7 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://101.5.162.21:8080/ServerJsonDemo/servlet/JsonServlet";
+			String address = "http://" + (serverIP).getText().toString() + ":8080/servlet/JsonServlet";;
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair>param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "search"));
