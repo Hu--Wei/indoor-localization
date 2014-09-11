@@ -192,7 +192,7 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			//在文本框中显示user信息
+			//在文本框中显示wifi信息
 			mWifiResult.setText(result);
 		}
 	}
