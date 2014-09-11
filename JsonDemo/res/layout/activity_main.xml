@@ -17,6 +17,24 @@
 						        android:layout_span="3"
 						        android:text="扫描wifi"/>
                         </TableRow>
+                        <TableRow 
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal" >
+						    <TextView
+						        android:id="@+id/wifi_result"
+						        android:layout_width="match_parent"
+						        android:layout_height="wrap_content"
+						        android:background="#eee"
+						        android:layout_marginTop="20dp"
+						        android:layout_below="@+id/btn_login"
+						        android:layout_span="3"
+						        android:textSize="14sp" 
+						        android:gravity="center_horizontal"
+						        android:scrollbars="vertical"
+						        android:singleLine="false"
+						        android:text="下面要显示wifi信息" />
+                        </TableRow>
     
                        <TableRow 
                             android:layout_width="fill_parent"

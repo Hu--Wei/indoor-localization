@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,11 +43,14 @@ public class MainActivity extends Activity {
 	private MyTask mTask;
 	private InputTask inTask;
 	private WifiTask wifiTask;
+	private TextView mWifiResult;
 	
 	private EditText inName;
 	private EditText inAge;
 	private EditText inSex;
 	private Button inSubmit;
+	
+	String wifiResult = "";
 	
 
 	
@@ -63,7 +67,10 @@ public class MainActivity extends Activity {
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
-		
+		mWifiResult = (TextView) findViewById(R.id.wifi_result);
+		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+
 		
 		inName=(EditText) findViewById(R.id.editname);
 		inAge =(EditText) findViewById(R.id.editage);
@@ -128,7 +135,7 @@ public class MainActivity extends Activity {
 			protected String doInBackground(String... params) {	
 				//通过HttpPost连接servlet
 				HttpClient hc = new DefaultHttpClient();
-				String address = "http://101.5.162.21:8080/ServerJsonDemo/servlet/JsonServlet";
+				String address = "http://59.66.130.169:8080/ServerJsonDemo/servlet/JsonServlet";
 				HttpPost hp = new HttpPost(address);
 				String name = (inName).getText().toString();
 				String age = (inAge).getText().toString();
@@ -169,7 +176,24 @@ public class MainActivity extends Activity {
 	class WifiTask extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... params) {
-			return null;
+			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			List<ScanResult> results = wifi.getScanResults();
+			int i = 0;
+			for(ScanResult result: results)
+			{
+				System.out.println(result.toString());
+				wifiResult += (++i) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
+			}
+			//mWifiResult.setText(wifiResult);
+			return wifiResult;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			//在文本框中显示user信息
+			mWifiResult.setText(result);
 		}
 	}
 
@@ -181,7 +205,7 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://101.5.162.21:8080/ServerJsonDemo/servlet/JsonServlet";
+			String address = "http://59.66.130.169:8080/ServerJsonDemo/servlet/JsonServlet";
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair>param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "search"));
