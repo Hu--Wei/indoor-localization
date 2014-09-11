@@ -110,9 +110,8 @@ public class MainActivity extends Activity {
 		mBtnWifi.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v){
-				String s = null;
 				wifiTask = new WifiTask();
-				wifiTask.execute(s);
+				wifiTask.execute();
 			}	
 		});
 		
@@ -135,7 +134,7 @@ public class MainActivity extends Activity {
 			protected String doInBackground(String... params) {	
 				//通过HttpPost连接servlet
 				HttpClient hc = new DefaultHttpClient();
-				String address = "http://59.66.130.169:8080/ServerJsonDemo/servlet/JsonServlet";
+				String address = "http://59.66.130.130:8080/ServerJsonDemo/servlet/JsonServlet";
 				HttpPost hp = new HttpPost(address);
 				String name = (inName).getText().toString();
 				String age = (inAge).getText().toString();
@@ -173,9 +172,9 @@ public class MainActivity extends Activity {
 		}
 	
 		
-	class WifiTask extends AsyncTask<String, Void, String> {
+	class WifiTask extends AsyncTask<Void, Void, String> {
 		@Override
-		protected String doInBackground(String... params) {
+		protected String doInBackground(Void... params) {
 			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 			List<ScanResult> results = wifi.getScanResults();
 			int i = 0;
@@ -205,7 +204,7 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://59.66.130.169:8080/ServerJsonDemo/servlet/JsonServlet";
+			String address = "http://59.66.130.130:8080/ServerJsonDemo/servlet/JsonServlet";
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair>param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "search"));
@@ -271,17 +270,6 @@ public class MainActivity extends Activity {
                 str = "Id: " + id + " Name: " + name + " Age: " + age + " Sex: " + sex;
                 System.out.println(str);
             }
-            
-            
-            WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-			List<ScanResult> results = wifi.getScanResults();
-			String wifiResult = "";
-			for(ScanResult result: results)
-			{
-				System.out.println(result.toString());
-				str += "\n" + result.SSID + " " + result.level;
-				wifiResult += result.toString() + "\n";
-			}
             
             return str;
 			//return wifiResult;
