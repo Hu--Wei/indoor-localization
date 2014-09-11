@@ -50,7 +50,6 @@ public class MainActivity extends Activity {
 	private EditText inSex;
 	private Button inSubmit;
 	
-	String wifiResult = "";
 	
 
 	
@@ -173,6 +172,8 @@ public class MainActivity extends Activity {
 	
 		
 	class WifiTask extends AsyncTask<Void, Void, String> {
+		private String wifiResult = "";
+		
 		@Override
 		protected String doInBackground(Void... params) {
 			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
