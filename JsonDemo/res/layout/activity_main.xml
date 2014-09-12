@@ -45,6 +45,95 @@
         </TableRow>
 
         <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal" >
+
+            <TextView
+                android:id="@+id/TextViewGetPosition"
+                android:layout_width="fill_parent"
+                android:background="#cccccc"
+                android:padding="18dip"
+                android:text="位置标签"
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editPosition"
+                android:layout_width="fill_parent"
+                android:padding="18dip"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="14sp" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal" >
+
+            <TextView
+                android:id="@+id/TextViewX"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:background="#777777"
+                android:padding="18dip"
+                android:text="X "
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editX"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:padding="18dip"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/TextViewY"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:background="#777777"
+                android:padding="18dip"
+                android:text="Y"
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editY"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:padding="18dip"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="14sp" />
+            
+            <TextView
+                android:id="@+id/TextViewZ"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:background="#777777"
+                android:padding="18dip"
+                android:text="Z"
+                android:textColor="#000"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editZ"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:padding="18dip"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="14sp" />
+            </TableRow>
+        
+        
+        <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
