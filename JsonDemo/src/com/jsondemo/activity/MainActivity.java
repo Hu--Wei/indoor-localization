@@ -42,18 +42,20 @@ public class MainActivity extends Activity {
 	private TextView mTvResult;
 	private String mStrName, mStrResult;
 	private MyTask mTask;
-	private InputTask inTask;
+	//private InputTask inTask;
 	private WifiTask wifiTask;
 	private TextView mWifiResult;
 	private EditText mEtServerIP;
 	
-	private EditText inName;
-	private EditText inAge;
-	private EditText inSex;
-	private Button inSubmit;
+	//private EditText inName;
+	//private EditText inAge;
+	//private EditText inSex;
+	//private Button inSubmit;
+	private EditText inX;
+	private EditText inY;
+	private EditText inZ;
+	private EditText inPos;
 	
-	
-
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +74,14 @@ public class MainActivity extends Activity {
 		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
 
-
-		
-		inName=(EditText) findViewById(R.id.editname);
-		inAge =(EditText) findViewById(R.id.editage);
-		inSex =(EditText) findViewById(R.id.editsex);
-		inSubmit=(Button) findViewById(R.id.btninput);
+		inPos = (EditText) findViewById(R.id.editPosition);
+		inX = (EditText) findViewById(R.id.editX);
+		inY = (EditText) findViewById(R.id.editY);
+		inZ = (EditText) findViewById(R.id.editZ);
+		//inName=(EditText) findViewById(R.id.editname);
+		//inAge =(EditText) findViewById(R.id.editage);
+		//inSex =(EditText) findViewById(R.id.editsex);
+		//inSubmit=(Button) findViewById(R.id.btninput);
 		
 
 		/**
@@ -97,7 +101,7 @@ public class MainActivity extends Activity {
 		/**
 		 *  处理btn_submit的响应任务，启动一个InputTask，处理数据库输入
 		 */
-		inSubmit.setOnClickListener(new OnClickListener() {
+		/*inSubmit.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v){
@@ -106,7 +110,7 @@ public class MainActivity extends Activity {
 				inTask = new InputTask();
 				inTask.execute(mStrName);
 			}
-		});
+		});*/
 		
 		
 		mBtnWifi.setOnClickListener(new OnClickListener() {
@@ -118,11 +122,6 @@ public class MainActivity extends Activity {
 		});
 		
 	}
-
-
-	
-	
-	
 	
 	/**
 	 *  数据库输入线程的具体任务，包括：
@@ -130,7 +129,7 @@ public class MainActivity extends Activity {
 	 *  2. 将用户信息通过param用HttpPost发送给server
 	 *  
 	 */
-		private class InputTask extends AsyncTask<String, Void, String> {
+		/*private class InputTask extends AsyncTask<String, Void, String> {
 
 			@Override
 			protected String doInBackground(String... params) {	
@@ -171,7 +170,7 @@ public class MainActivity extends Activity {
 				}
 				return name;
 			}
-		}
+		}*/
 	
 		
 	class WifiTask extends AsyncTask<Void, Void, String> {
@@ -191,6 +190,48 @@ public class MainActivity extends Activity {
 				wifiResult += (++i) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
 			}
 			//mWifiResult.setText(wifiResult);
+
+			//通过HttpPost连接servlet
+			HttpClient hc = new DefaultHttpClient();
+			String address = "http://" + (mEtServerIP).getText().toString() + "/servlet/JsonServlet";
+			HttpPost hp = new HttpPost(address);
+			String strPos = inPos.getText().toString();
+			String strX = inX.getText().toString();
+			String strY = inY.getText().toString();
+			String strZ = inZ.getText().toString();
+			
+			//通过param发送参数给servlet
+			List<NameValuePair>param = new ArrayList<NameValuePair>();
+			param.add(new BasicNameValuePair("type", "input"));
+			param.add(new BasicNameValuePair("pos", strPos));
+			param.add(new BasicNameValuePair("x", strX));
+			param.add(new BasicNameValuePair("y", strY));
+			param.add(new BasicNameValuePair("z", strZ));
+			for(ScanResult result: results) {
+				param.add(new BasicNameValuePair(result.BSSID, result.level + ""));
+			}
+			try{
+				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
+				// 发送请求
+				HttpResponse response = hc.execute(hp);
+				// 返回200即请求成功
+				if (response.getStatusLine().getStatusCode() == 200) {
+					//数据写入成功
+					System.out.println("上传成功");
+				} else {
+					System.out.println("连接失败");
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			return wifiResult;
 		}
 		

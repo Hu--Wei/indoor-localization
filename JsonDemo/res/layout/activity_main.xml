@@ -190,7 +190,7 @@
                 android:text="下面要显示服务器的返回值"
                 android:textSize="14sp" />
         </TableRow>
-
+<!-- 
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -213,10 +213,10 @@
                 android:text="Tom"
                 android:textColor="#000"
                 android:textSize="14sp" />
-        </TableRow>
+        </TableRow> -->
 
         <!-- Row 2 with two column -->
-
+<!-- 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -238,10 +238,10 @@
                 android:text="30"
                 android:textColor="#000"
                 android:textSize="14dp" />
-        </TableRow>
+        </TableRow> -->
 
         <!-- Row 3 with 2 columns -->
-
+<!-- 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -263,9 +263,9 @@
                 android:text="male"
                 android:textColor="#000"
                 android:textSize="14dp" />
-        </TableRow>
+        </TableRow> -->
         <!-- Text Edit and Query Button -->
-
+<!-- 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -278,6 +278,6 @@
                 android:padding="18dip"
                 android:text="提交"
                 android:textColor="#000" />
-        </TableRow>
+        </TableRow> -->
     </TableLayout>
 </ScrollView> 
