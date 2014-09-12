@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.net.wifi.*;
 
 public class MainActivity extends Activity { 
@@ -178,6 +179,9 @@ public class MainActivity extends Activity {
 		protected String doInBackground(Void... params) {
 			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 			List<ScanResult> results = wifi.getScanResults();
+			if (results == null) {
+				return "Wifi 未打开";
+			}
 			int i = 0;
 			for(ScanResult result: results)
 			{
