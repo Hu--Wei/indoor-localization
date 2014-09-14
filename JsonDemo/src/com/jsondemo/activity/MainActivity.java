@@ -179,8 +179,10 @@ public class MainActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... params) {
 			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			wifi.startScan();
 			List<ScanResult> results = wifi.getScanResults();
-			if (results == null) {
+			if (results == null)
+			{
 				return "Wifi 未打开";
 			}
 			int i = 0;
@@ -201,7 +203,7 @@ public class MainActivity extends Activity {
 			String strZ = inZ.getText().toString();
 			
 			//通过param发送参数给servlet
-			List<NameValuePair>param = new ArrayList<NameValuePair>();
+			List<NameValuePair> param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "input"));
 			param.add(new BasicNameValuePair("pos", strPos));
 			param.add(new BasicNameValuePair("x", strX));
