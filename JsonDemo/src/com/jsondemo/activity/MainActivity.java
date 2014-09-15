@@ -3,7 +3,10 @@ package com.jsondemo.activity;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -32,7 +35,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.net.wifi.*;
 
 public class MainActivity extends Activity {
@@ -172,6 +174,7 @@ public class MainActivity extends Activity {
 			
 	
 	class WifiTask extends AsyncTask<Void, Integer, String> {
+		final public double LN10 = Math. log(10);
 		private int count = 0;
 		private WifiManager wifi;
 		private String wifiResult = "";
@@ -184,25 +187,10 @@ public class MainActivity extends Activity {
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 			count = 0;
 			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			Map<String, Double> map = new HashMap<String, Double>();
+			map.clear();
 			for (int i = 0; i < 5; i++) {
-				/*try {
-					Thread.sleep(1000);
-				}
-				catch (InterruptedException e) {
-				}
-				//wifiResult = "";*/
 				wifi.startScan();
-				/*results = wifi.getScanResults();
-				if (results == null)
-				{
-					return "Wifi 未打开";
-				}
-				int k = 0;
-				for(ScanResult result: results)
-				{
-					System.out.println(result.toString());
-					wifiResult += (++k) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
-				}*/
 				while (count <= i) {
 					try {
 						Thread.sleep(100);
@@ -210,9 +198,31 @@ public class MainActivity extends Activity {
 					catch (InterruptedException e) {
 					}
 				}
+				//List<ScanResult> results= wifi.getScanResults();
+				results = wifi.getScanResults();
+				for (ScanResult result : results) {
+					if (map.containsKey(result.BSSID)) {
+						Double sum = map.get(result.BSSID);
+						sum += Math.exp(result.level * LN10 / 10);
+						map.put(result.BSSID, sum);
+					}
+					else 
+						map.put(result.BSSID, Math.exp(result.level * LN10 / 10));
+				}
+				/*wifiResult += "Stored Records:\n";
+				Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
+					wifiResult += entry.getKey() + " " + entry.getValue() + "\n";
+				}*/
 				publishProgress(i + 1);
 			}
-			//mWifiResult.setText(wifiResult);
+			/*wifiResult += "Average:\n";
+			Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
+				wifiResult += entry.getKey() + " " + 10 * Math.log10(entry.getValue() / 5) + "\n";
+			}*/
 
 			//通过HttpPost连接servlet
 			HttpClient hc = new DefaultHttpClient();
@@ -234,7 +244,14 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("z", strZ));
 			param.add(new BasicNameValuePair("num", results.size() + ""));
 			int idx = 0;
-			
+
+			Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
+				param.add(new BasicNameValuePair((idx++) + "", entry.getKey() + "&" + 
+						10 * Math.log10(entry.getValue() / 5)));
+			}
+
 			for(ScanResult result: results) {
 				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + "&" + result.level));
 			}
