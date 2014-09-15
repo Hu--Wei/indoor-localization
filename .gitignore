@@ -19,4 +19,4 @@ ServerJsonDemo/.mymetadata
 ServerJsonDemo/.project
 ServerJsonDemo/.settings
 .directory
-.gitignore
+#.gitignore
