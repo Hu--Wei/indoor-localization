@@ -188,7 +188,10 @@ public class MainActivity extends Activity {
 				}
 				//wifiResult = "";
 				WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-				wifi.startScan();
+				if (!wifi.startScan()) {
+					mWifiResult.setText("failed!");
+					return "";
+				}
 				results = wifi.getScanResults();
 				if (results == null)
 				{
