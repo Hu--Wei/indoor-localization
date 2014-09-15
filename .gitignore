@@ -7,10 +7,9 @@ JsonDemo/lint.xml
 JsonDemo/proguard-project.txt
 JsonDemo/project.properties
 ServerJsonDemo/bin
-ServerJsonDemo/Webroot
+ServerJsonDemo/WebRoot
 ServerJsonDemo/work
 ServerJsonDemo/build.xml
-ServerJsonDemo/database_init.txt
 ServerJsonDemo/.tomcatplugin
 ServerJsonDemo/.classpath
 ServerJsonDemo/.directory
@@ -18,5 +17,6 @@ ServerJsonDemo/.DS_Store
 ServerJsonDemo/.mymetadata
 ServerJsonDemo/.project
 ServerJsonDemo/.settings
+ServerJsonDemo/.myeclipse
 .directory
 #.gitignore
