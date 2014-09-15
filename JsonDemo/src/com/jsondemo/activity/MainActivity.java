@@ -172,21 +172,27 @@ public class MainActivity extends Activity {
 			
 	
 	class WifiTask extends AsyncTask<Void, Integer, String> {
+		private int count = 0;
+		private WifiManager wifi;
+		private String wifiResult = "";
 		@Override
 		protected String doInBackground(Void... params) {
 			publishProgress(0);
-			String wifiResult = "";
 			List<ScanResult> results = null;
+			WifiReceiver receiver = new WifiReceiver();
+			registerReceiver(receiver, new IntentFilter(
+					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+			count = 0;
+			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 			for (int i = 0; i < 5; i++) {
-				try {
+				/*try {
 					Thread.sleep(1000);
 				}
 				catch (InterruptedException e) {
 				}
-				//wifiResult = "";
-				WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+				//wifiResult = "";*/
 				wifi.startScan();
-				results = wifi.getScanResults();
+				/*results = wifi.getScanResults();
 				if (results == null)
 				{
 					return "Wifi 未打开";
@@ -196,6 +202,13 @@ public class MainActivity extends Activity {
 				{
 					System.out.println(result.toString());
 					wifiResult += (++k) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
+				}*/
+				while (count <= i) {
+					try {
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e) {
+					}
 				}
 				publishProgress(i + 1);
 			}
@@ -210,6 +223,8 @@ public class MainActivity extends Activity {
 			String strY = inY.getText().toString();
 			String strZ = inZ.getText().toString();
 			
+			results = wifi.getScanResults();
+			
 			//通过param发送参数给servlet
 			List<NameValuePair> param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "input"));
@@ -219,8 +234,9 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("z", strZ));
 			param.add(new BasicNameValuePair("num", results.size() + ""));
 			int idx = 0;
+			
 			for(ScanResult result: results) {
-				param.add(new BasicNameValuePair(idx + "", result.BSSID + "&" + result.level));
+				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + "&" + result.level));
 			}
 			try{
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
@@ -258,10 +274,27 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onProgressUpdate(Integer ... values) {
 			super.onProgressUpdate(values);
-			mWifiResult.setText(values[0] + " scan(s) finished!");
+			String s = values[0] > 1? "s": "";
+			mWifiResult.setText(values[0] + " scan" + s + " finished!");
 		}
+		
+		class WifiReceiver extends BroadcastReceiver {
+	        @Override
+	        public void onReceive(Context context, Intent intent) {             
+	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+	            //wifiManager.startScan();//request a scan for access points
+	        	int k = 1;
+	        	wifiResult += "Scan #" + (count + 1) + "\n";
+	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
+	                for(final ScanResult result : results){
+	                	wifiResult += (k++) + " : " + result.BSSID + " " 
+	                			+ result.SSID + " " + result.level + "\n";
+	            }
+	            count++;
+	        }
+	    }
 	}
-
+		
 	class MyTask extends AsyncTask<String, Void, String> {
 
 		@Override
