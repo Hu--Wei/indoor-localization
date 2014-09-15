@@ -35,54 +35,47 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.net.wifi.*;
 
-public class MainActivity extends Activity { 
-	private EditText mEtName;
-	private Button mBtnLogin;
-	private Button mBtnWifi;
-	private TextView mTvResult;
-	private String mStrName, mStrResult;
-	private MyTask mTask;
-	//private InputTask inTask;
-	private WifiTask wifiTask;
-	private TextView mWifiResult;
+public class MainActivity extends Activity {
 	private EditText mEtServerIP;
-	
-	//private EditText inName;
-	//private EditText inAge;
-	//private EditText inSex;
-	//private Button inSubmit;
 	private EditText inX;
 	private EditText inY;
 	private EditText inZ;
 	private EditText inPos;
+	private EditText mEtName;
 	
+	private TextView mWifiResult;
+	private TextView mTvResult;
+	
+	private String mStrName, mStrResult;
+	
+	private Button mBtnLogin;
+	private Button mBtnWifi;
+	
+	private WifiTask wifiTask;
+	private MyTask mTask;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		//显示app的界面
 		setContentView(R.layout.activity_main);
+		
 		//获取app的组件信息
-		
-	
-		
-		mEtName = (EditText) findViewById(R.id.et_hello);
-		mTvResult = (TextView) findViewById(R.id.tv_result);
-		mBtnLogin = (Button) findViewById(R.id.btn_login);
-		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
-		mWifiResult = (TextView) findViewById(R.id.wifi_result);
-		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
-
-		inPos = (EditText) findViewById(R.id.editPosition);
 		inX = (EditText) findViewById(R.id.editX);
 		inY = (EditText) findViewById(R.id.editY);
 		inZ = (EditText) findViewById(R.id.editZ);
-		//inName=(EditText) findViewById(R.id.editname);
-		//inAge =(EditText) findViewById(R.id.editage);
-		//inSex =(EditText) findViewById(R.id.editsex);
-		//inSubmit=(Button) findViewById(R.id.btninput);
+		inPos = (EditText) findViewById(R.id.editPosition);
+		mEtName = (EditText) findViewById(R.id.et_hello);
 		
+		mWifiResult = (TextView) findViewById(R.id.wifi_result);
+		mTvResult = (TextView) findViewById(R.id.tv_result);
+		
+		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
+		mBtnLogin = (Button) findViewById(R.id.btn_login);
+		
+		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 
 		/**
 		 *  处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
@@ -98,6 +91,7 @@ public class MainActivity extends Activity {
 				mTask.execute(mStrName);
 			}
 		});
+		
 		/**
 		 *  处理btn_submit的响应任务，启动一个InputTask，处理数据库输入
 		 */
@@ -112,7 +106,9 @@ public class MainActivity extends Activity {
 			}
 		});*/
 		
-		
+		/**
+		 * 处理btn_wifi的响应任务，启动一个WifiTask
+		 */
 		mBtnWifi.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v){
@@ -120,16 +116,15 @@ public class MainActivity extends Activity {
 				wifiTask.execute();
 			}	
 		});
-		
 	}
+	
 	
 	/**
 	 *  数据库输入线程的具体任务，包括：
 	 *  1. 连接servlet
 	 *  2. 将用户信息通过param用HttpPost发送给server
-	 *  
 	 */
-		/*private class InputTask extends AsyncTask<String, Void, String> {
+	/*private class InputTask extends AsyncTask<String, Void, String> {
 
 			@Override
 			protected String doInBackground(String... params) {	
@@ -171,8 +166,7 @@ public class MainActivity extends Activity {
 				return name;
 			}
 		}*/
-	
-		
+			
 	class WifiTask extends AsyncTask<Void, Integer, String> {
 		
 		@Override
@@ -262,7 +256,6 @@ public class MainActivity extends Activity {
 			mWifiResult.setText(values[0] + " scan(s) finished!");
 		}
 	}
-
 
 	class MyTask extends AsyncTask<String, Void, String> {
 
