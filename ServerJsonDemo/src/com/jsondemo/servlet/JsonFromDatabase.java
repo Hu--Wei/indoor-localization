@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.DatabaseMetaData;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -71,12 +72,10 @@ public class JsonFromDatabase {
 		Double y = json.getDouble("y");
 		Double z = json.getDouble("z");
 		Integer num = json.getInt("num");
-		//for debug
-		System.out.println(pos + '\t' + x + '\t' + y + '\t' + z);
+		System.out.println(pos + '\t' + x + '\t' + y + '\t' + z + '\t' + num);
 		String[][] data = new String[num][];
 		for(Integer i = 0; i < num; i++) {
 			data[i] = (json.getString(((Integer)i).toString())).split("\\&");
-			//for debug
 			System.out.println(data[i][0] + '\t' + data[i][1]);
 		}
 		
@@ -88,8 +87,12 @@ public class JsonFromDatabase {
 	            Statement stmt;
 	            stmt = conn.createStatement();
 	            
+	            String query = "";
+	            query = "ALTER TABLE wifi ADD post FLOAT(7,4)";
+	            stmt.executeUpdate(query);
+	            
 	            //新增一条数据，将数据的信息写入数据库
-	            String query = "INSERT INTO wifi (pos, x, y, z) VALUES ('"+pos+"', '"+x+"', '"+y+"', '"+z+"')";
+	            query = "INSERT INTO wifi (pos, x, y, z) VALUES ('"+pos+"', '"+x+"', '"+y+"', '"+z+"')";
 	            stmt.executeUpdate(query);
 	            //查询插入的信息的ID
 	            ResultSet res = stmt.executeQuery("select LAST_INSERT_ID()");
