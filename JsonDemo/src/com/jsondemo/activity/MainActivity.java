@@ -217,6 +217,7 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("x", strX));
 			param.add(new BasicNameValuePair("y", strY));
 			param.add(new BasicNameValuePair("z", strZ));
+			param.add(new BasicNameValuePair("num", results.size() + ""));
 			for(ScanResult result: results) {
 				param.add(new BasicNameValuePair(result.BSSID, result.level + ""));
 			}

@@ -6,6 +6,6 @@ The format of Json transmission:
 "y"	: (y coordinate)
 "z"	: (z coordinate)
 "num"	: (# AP scanned)
-"1"	: (MAC + "&" + RSSI)
-"2"
+"0"	: (MAC + "&" + RSSI)
+"1"
 ...
