@@ -90,16 +90,26 @@ public class JsonServlet extends HttpServlet {
 		//如果type为"input"，则执行向mySQL数据库写入数据功能
 		else if(type.equals("input")){
 			//获取request中的用户name, age, sex信息
-			String name = request.getParameter("name").toString().trim();
-			String age = request.getParameter("age").toString().trim();
-			String sex = request.getParameter("sex").toString().trim();
-            String str = "Name: " +name+" Age: "+age+" Sex "+sex;
+			String pos = request.getParameter("pos").toString().trim();
+			String x = request.getParameter("x").toString().trim();
+			String y = request.getParameter("y").toString().trim();
+			String z = request.getParameter("z").toString().trim();
+			String num = request.getParameter("num").toString().trim();
+			
+            String str = "pos: " + pos + "x: " + x + "y: " + y + "z: " + z + "num: " + num;
             System.out.println(str);
+            
             //封装上述信息成为一个json对象
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("name", name);
-            jsonObject.put("age", age);
-            jsonObject.put("sex", sex);
+            jsonObject.put("pos", pos);
+            jsonObject.put("x", x);
+            jsonObject.put("y", y);
+            jsonObject.put("z", z);
+            jsonObject.put("num", num);
+            for(Integer i = 0; i < Integer.parseInt(num); i++)
+            	jsonObject.put(((Integer)i).toString(), 
+            			request.getParameter(((Integer)i).toString()).toString().trim());
+            
             //连接mySQL数据库，写入此Json对象
             JsonFromDatabase inputit = new JsonFromDatabase();
             inputit.InsertJsonIntoDatabase(jsonObject);

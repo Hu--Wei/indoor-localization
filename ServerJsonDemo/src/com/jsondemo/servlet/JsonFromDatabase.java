@@ -32,7 +32,7 @@ public class JsonFromDatabase {
 			//输出连接成功到控制台
 			System.out.println("Connect to database");
 			//准备查询 prepareCall 返回CallableStatement
-			cs =conn.prepareCall(sqlstr,ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			cs =conn.prepareCall(sqlstr, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			cs.setString(1, name);
 			//查询mySQL
 			rs = cs.executeQuery();
@@ -65,19 +65,32 @@ public class JsonFromDatabase {
 	public int InsertJsonIntoDatabase(JSONObject json){
 		int ret_id=0;
 		Connection conn= null;
-		String name = json.getString("name");
-		String age = json.getString("age");
-		String sex = json.getString("sex");
+		
+		String pos = json.getString("pos");
+		Double x = json.getDouble("x");
+		Double y = json.getDouble("y");
+		Double z = json.getDouble("z");
+		Integer num = json.getInt("num");
+		//for debug
+		System.out.println(pos + '\t' + x + '\t' + y + '\t' + z);
+		String[][] data = new String[num][];
+		for(Integer i = 0; i < num; i++) {
+			data[i] = (json.getString(((Integer)i).toString())).split("\\&");
+			//for debug
+			System.out.println(data[i][0] + '\t' + data[i][1]);
+		}
+		
 		try {
 	    	    conn = DBUtil.getConnForMySql();
 				System.out.println("Connect to database");
 
-	            Statement stmt; //创建声明
+				//创建声明
+	            Statement stmt;
 	            stmt = conn.createStatement();
 	            
-
 	            //新增一条数据，将数据的信息写入数据库
-	            stmt.executeUpdate("INSERT INTO users (userName, userAge, userSex) VALUES ('"+name+"','"+age+"', '"+sex+"')");
+	            String query = "INSERT INTO wifi (pos, x, y, z) VALUES ('"+pos+"', '"+x+"', '"+y+"', '"+z+"')";
+	            stmt.executeUpdate(query);
 	            //查询插入的信息的ID
 	            ResultSet res = stmt.executeQuery("select LAST_INSERT_ID()");
 	            
@@ -91,7 +104,7 @@ public class JsonFromDatabase {
 	        }finally{
 				DBUtil.CloseResources(conn);
 	        }
-	    return ret_id;   
+	    return ret_id;
 	}
 
 }
