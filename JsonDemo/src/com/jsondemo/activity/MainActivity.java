@@ -173,23 +173,34 @@ public class MainActivity extends Activity {
 		}*/
 	
 		
-	class WifiTask extends AsyncTask<Void, Void, String> {
-		private String wifiResult = "";
+	class WifiTask extends AsyncTask<Void, Integer, String> {
 		
 		@Override
 		protected String doInBackground(Void... params) {
-			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-			wifi.startScan();
-			List<ScanResult> results = wifi.getScanResults();
-			if (results == null)
-			{
-				return "Wifi 未打开";
-			}
-			int i = 0;
-			for(ScanResult result: results)
-			{
-				System.out.println(result.toString());
-				wifiResult += (++i) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
+			publishProgress(0);
+			String wifiResult = "";
+			List<ScanResult> results = null;
+			for (int i = 0; i < 5; i++) {
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+				}
+				//wifiResult = "";
+				WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+				wifi.startScan();
+				results = wifi.getScanResults();
+				if (results == null)
+				{
+					return "Wifi 未打开";
+				}
+				int k = 0;
+				for(ScanResult result: results)
+				{
+					System.out.println(result.toString());
+					wifiResult += (++k) + ": " + result.SSID + " " + result.BSSID + " " + result.level + "\n";
+				}
+				publishProgress(i + 1);
 			}
 			//mWifiResult.setText(wifiResult);
 
@@ -243,6 +254,12 @@ public class MainActivity extends Activity {
 			super.onPostExecute(result);
 			//在文本框中显示wifi信息
 			mWifiResult.setText(result);
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer ... values) {
+			super.onProgressUpdate(values);
+			mWifiResult.setText(values[0] + " scan(s) finished!");
 		}
 	}
 
