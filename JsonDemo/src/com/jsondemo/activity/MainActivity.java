@@ -218,8 +218,9 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("y", strY));
 			param.add(new BasicNameValuePair("z", strZ));
 			param.add(new BasicNameValuePair("num", results.size() + ""));
+			int idx = 0;
 			for(ScanResult result: results) {
-				param.add(new BasicNameValuePair(result.BSSID, result.level + ""));
+				param.add(new BasicNameValuePair(idx + "", result.BSSID + "&" + result.level));
 			}
 			try{
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
