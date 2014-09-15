@@ -252,9 +252,6 @@ public class MainActivity extends Activity {
 						10 * Math.log10(entry.getValue() / 5)));
 			}
 
-			for(ScanResult result: results) {
-				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + "&" + result.level));
-			}
 			try{
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
 				// 发送请求
