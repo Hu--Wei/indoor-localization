@@ -36,10 +36,13 @@ import android.widget.Toast;
 import android.net.wifi.*;
 
 public class MainActivity extends Activity {
+	//server IP, for example 101.5.155.101:8080
 	private EditText mEtServerIP;
+	//position coordinate
 	private EditText inX;
 	private EditText inY;
 	private EditText inZ;
+	//position label
 	private EditText inPos;
 	private EditText mEtName;
 	
@@ -167,8 +170,8 @@ public class MainActivity extends Activity {
 			}
 		}*/
 			
+	
 	class WifiTask extends AsyncTask<Void, Integer, String> {
-		
 		@Override
 		protected String doInBackground(Void... params) {
 			publishProgress(0);
