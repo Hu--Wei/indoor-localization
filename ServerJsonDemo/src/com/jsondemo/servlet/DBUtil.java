@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+
 /**数据库操作类*/
 public class DBUtil {
 	private static Connection conn;
@@ -27,6 +28,7 @@ public class DBUtil {
 	 * pstmt.setBigDecimal(1, 153833.00) pstmt.setInt(2, 110592) See
 	 * Also:Connection.prepareStatement ResultSet
 	 */
+	
 	private static PreparedStatement pstmt;
 
 	private static String driverClass = "";
@@ -100,7 +102,9 @@ public class DBUtil {
 			for (int i = 0; i < params.length; i++) {
 				pstmt.setString(i + 1, params[i]);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 		return pstmt;
@@ -177,7 +181,7 @@ public class DBUtil {
 		CloseResources(stmt);
 		CloseResources(conn);
 	}
-
+	
 	/**
 	 * @param conn
 	 * @param rs

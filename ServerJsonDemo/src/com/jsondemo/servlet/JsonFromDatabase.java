@@ -77,6 +77,8 @@ public class JsonFromDatabase {
 		for(Integer i = 0; i < num; i++) {
 			data[i] = (json.getString(((Integer)i).toString())).split("\\&");
 			System.out.println(data[i][0] + '\t' + data[i][1]);
+			data[i][0] = "MAC" + data[i][0].replace(":", "");
+			//System.out.println(data[i][0] + '\t' + data[i][1]);
 		}
 		
 		try {
@@ -88,12 +90,31 @@ public class JsonFromDatabase {
 	            stmt = conn.createStatement();
 	            
 	            String query = "";
-	            query = "ALTER TABLE wifi ADD post FLOAT(7,4)";
+	            
+	            DatabaseMetaData md = conn.getMetaData();
+	            ResultSet rs;
+	            for(Integer i = 0; i < num; i++) {
+	            	rs = md.getColumns(null, null, "wifi", data[i][0]);
+		            if (!rs.next()) {
+		            	query = "ALTER TABLE wifi ADD " + data[i][0] + " FLOAT(7, 4)";
+		            	System.out.println(query);
+		            	stmt.executeUpdate(query);
+		            }
+	            }
+	  
+	            //新增一条数据，将数据的信息写入数据库
+	            query = "INSERT INTO wifi (pos, x, y, z";
+	            for(Integer i = 0; i < num; i++) {
+	            	query += ", " + data[i][0];
+	            }
+	            query += ") VALUES ('" + pos + "', '" + x + "', '" + y + "', '" + z;
+	            for(Integer i = 0; i < num; i++) {
+	            	query += "', '" + Float.valueOf(data[i][1]);
+	            }
+	            query += "')";
+	            System.out.println(query);
 	            stmt.executeUpdate(query);
 	            
-	            //新增一条数据，将数据的信息写入数据库
-	            query = "INSERT INTO wifi (pos, x, y, z) VALUES ('"+pos+"', '"+x+"', '"+y+"', '"+z+"')";
-	            stmt.executeUpdate(query);
 	            //查询插入的信息的ID
 	            ResultSet res = stmt.executeQuery("select LAST_INSERT_ID()");
 	            

@@ -89,7 +89,6 @@ public class JsonServlet extends HttpServlet {
 		}
 		//如果type为"input"，则执行向mySQL数据库写入数据功能
 		else if(type.equals("input")){
-			System.out.println("INPUT~~~~");
 			//获取request中的用户name, age, sex信息
 			String pos = request.getParameter("pos").toString().trim();
 			String x = request.getParameter("x").toString().trim();
@@ -97,8 +96,8 @@ public class JsonServlet extends HttpServlet {
 			String z = request.getParameter("z").toString().trim();
 			String num = request.getParameter("num").toString().trim();
 			
-            //String str = pos + "haha" + x + "\t\t" + y + "\t\t" + z + "\t\t" + num;
-            //System.out.println(str);
+            String str = pos + "\t" + x + "\t" + y + "\t" + z + "\t" + num;
+            System.out.println(str);
             
             //封装上述信息成为一个json对象
             JSONObject jsonObject = new JSONObject();
