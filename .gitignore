@@ -6,6 +6,10 @@ JsonDemo/ic_launcher-web.png
 JsonDemo/lint.xml
 JsonDemo/proguard-project.txt
 JsonDemo/project.properties
+JsonDemo/.project
+JsonDemo/.DS_Store
+JsonDemo/.classpath
+JsonDemo/.settings
 ServerJsonDemo/bin
 ServerJsonDemo/WebRoot
 ServerJsonDemo/work
