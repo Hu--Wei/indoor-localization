@@ -10,7 +10,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class JsonFromDatabase {
-	
+	String tableName = "xuetang_test";
+
 	/** 从数据库中读取数据 
 	 * @param name，所要读取用户的userName
 	 * @return userInfos.toString(), 返回读取的用户信息的字符流
@@ -94,16 +95,16 @@ public class JsonFromDatabase {
 	            DatabaseMetaData md = conn.getMetaData();
 	            ResultSet rs;
 	            for(Integer i = 0; i < num; i++) {
-	            	rs = md.getColumns(null, null, "wifi", data[i][0]);
+	            	rs = md.getColumns(null, null, tableName, data[i][0]);
 		            if (!rs.next()) {
-		            	query = "ALTER TABLE wifi ADD " + data[i][0] + " FLOAT(7, 4)";
+		            	query = "ALTER TABLE " + tableName + " ADD " + data[i][0] + " FLOAT(7, 4)";
 		            	System.out.println(query);
 		            	stmt.executeUpdate(query);
 		            }
 	            }
 	  
 	            //新增一条数据，将数据的信息写入数据库
-	            query = "INSERT INTO wifi (pos, x, y, z";
+	            query = "INSERT INTO " + tableName + " (pos, x, y, z";
 	            for(Integer i = 0; i < num; i++) {
 	            	query += ", " + data[i][0];
 	            }
