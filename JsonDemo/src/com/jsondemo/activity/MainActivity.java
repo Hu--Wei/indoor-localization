@@ -185,12 +185,9 @@ public class MainActivity extends Activity {
 			}
 
 			try{
-				wifiResult = "Enter:\n";
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
-				wifiResult += "Enter:\n";
 				// 发送请求
 				HttpResponse response = hc.execute(hp);
-				wifiResult += "Enter:\n";
 				// 返回200即请求成功
 				if (response.getStatusLine().getStatusCode() == 200) {
 					//数据写入成功
@@ -231,13 +228,13 @@ public class MainActivity extends Activity {
 	        public void onReceive(Context context, Intent intent) {             
 	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 	            //wifiManager.startScan();//request a scan for access points
-	        	/*int k = 1;
+	        	int k = 1;
 	        	wifiResult += "Scan #" + (count + 1) + "\n";
 	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
 	                for(final ScanResult result : results){
 	                	wifiResult += (k++) + " : " + result.BSSID + " " 
 	                			+ result.SSID + " " + result.level + "\n";
-	            }*/
+	            }
 	            count++;
 	        }
 	    }
