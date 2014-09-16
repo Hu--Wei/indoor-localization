@@ -97,23 +97,6 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		/**
-		 *  处理btn_submit的响应任务，启动一个InputTask，处理数据库输入
-		 */
-		/*inSubmit.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v){
-				// TODO Auto-generated method stub
-				// AsyncTask异步任务开始
-				inTask = new InputTask();
-				inTask.execute(mStrName);
-			}
-		});*/
-		
-		/**
-		 * 处理btn_wifi的响应任务，启动一个WifiTask
-		 */
 		mBtnWifi.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v){
@@ -129,68 +112,40 @@ public class MainActivity extends Activity {
 	 *  1. 连接servlet
 	 *  2. 将用户信息通过param用HttpPost发送给server
 	 */
-	/*private class InputTask extends AsyncTask<String, Void, String> {
-
-			@Override
-			protected String doInBackground(String... params) {	
-				//通过HttpPost连接servlet
-				HttpClient hc = new DefaultHttpClient();
-				String address = "http://" + (mEtServerIP).getText().toString() + "/servlet/JsonServlet";
-				HttpPost hp = new HttpPost(address);
-				String name = (inName).getText().toString();
-				String age = (inAge).getText().toString();
-				String sex = (inSex).getText().toString();
-				
-				//通过param发送参数给servlet
-				List<NameValuePair>param = new ArrayList<NameValuePair>();
-				param.add(new BasicNameValuePair("type", "input"));
-				param.add(new BasicNameValuePair("name", name));
-				param.add(new BasicNameValuePair("age", age));
-				param.add(new BasicNameValuePair("sex", sex));
-				try{
-					hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
-					// 发送请求
-					HttpResponse response = hc.execute(hp);
-					// 返回200即请求成功
-					if (response.getStatusLine().getStatusCode() == 200) {
-						//数据写入成功
-						System.out.println("上传成功");
-					} else {
-						System.out.println("连接失败");
-					}
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return name;
-			}
-		}*/
-			
 	
 	class WifiTask extends AsyncTask<Void, Integer, String> {
 		final public double LN10 = Math. log(10);
+		final public int NUMBER_OF_TESTS = 5;
 		private int count = 0;
 		private WifiManager wifi;
 		private String wifiResult = "";
+		private Map<String, Double> map = new HashMap<String, Double>();
+		private List<ScanResult> results = null;
+		private void updateMap() {
+			results = wifi.getScanResults();
+			for (ScanResult result : results) {
+				if (map.containsKey(result.BSSID)) {
+					Double sum = map.get(result.BSSID);
+					sum += Math.exp(result.level * LN10 / 10);
+					map.put(result.BSSID, sum);
+				}
+				else 
+					map.put(result.BSSID, Math.exp(result.level * LN10 / 10));
+			}								
+		}
 		@Override
 		protected String doInBackground(Void... params) {
 			publishProgress(0);
-			List<ScanResult> results = null;
 			WifiReceiver receiver = new WifiReceiver();
 			registerReceiver(receiver, new IntentFilter(
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 			count = 0;
 			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-			Map<String, Double> map = new HashMap<String, Double>();
 			map.clear();
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < NUMBER_OF_TESTS; i++) {
 				wifi.startScan();
+				if (i > 0) 
+					updateMap();
 				while (count <= i) {
 					try {
 						Thread.sleep(100);
@@ -198,31 +153,10 @@ public class MainActivity extends Activity {
 					catch (InterruptedException e) {
 					}
 				}
-				//List<ScanResult> results= wifi.getScanResults();
-				results = wifi.getScanResults();
-				for (ScanResult result : results) {
-					if (map.containsKey(result.BSSID)) {
-						Double sum = map.get(result.BSSID);
-						sum += Math.exp(result.level * LN10 / 10);
-						map.put(result.BSSID, sum);
-					}
-					else 
-						map.put(result.BSSID, Math.exp(result.level * LN10 / 10));
-				}
-				/*wifiResult += "Stored Records:\n";
-				Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
-					wifiResult += entry.getKey() + " " + entry.getValue() + "\n";
-				}*/
+				if (i == NUMBER_OF_TESTS - 1)
+					updateMap();
 				publishProgress(i + 1);
 			}
-			/*wifiResult += "Average:\n";
-			Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
-				wifiResult += entry.getKey() + " " + 10 * Math.log10(entry.getValue() / 5) + "\n";
-			}*/
 
 			//通过HttpPost连接servlet
 			HttpClient hc = new DefaultHttpClient();
@@ -233,8 +167,6 @@ public class MainActivity extends Activity {
 			String strY = inY.getText().toString();
 			String strZ = inZ.getText().toString();
 			
-			results = wifi.getScanResults();
-			
 			//通过param发送参数给servlet
 			List<NameValuePair> param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "input"));
@@ -242,26 +174,29 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("x", strX));
 			param.add(new BasicNameValuePair("y", strY));
 			param.add(new BasicNameValuePair("z", strZ));
-			param.add(new BasicNameValuePair("num", results.size() + ""));
+			param.add(new BasicNameValuePair("num", map.size() + ""));
 			int idx = 0;
 
 			Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
 				param.add(new BasicNameValuePair((idx++) + "", entry.getKey() + "&" + 
-						10 * Math.log10(entry.getValue() / 5)));
+						10 * Math.log10(entry.getValue() / NUMBER_OF_TESTS)));
 			}
 
 			try{
+				wifiResult = "Enter:\n";
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
+				wifiResult += "Enter:\n";
 				// 发送请求
 				HttpResponse response = hc.execute(hp);
+				wifiResult += "Enter:\n";
 				// 返回200即请求成功
 				if (response.getStatusLine().getStatusCode() == 200) {
 					//数据写入成功
-					System.out.println("上传成功");
+					wifiResult += "上传成功";
 				} else {
-					System.out.println("连接失败");
+					wifiResult += "连接失败";
 				}
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -273,7 +208,6 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 			return wifiResult;
 		}
 		
@@ -297,13 +231,13 @@ public class MainActivity extends Activity {
 	        public void onReceive(Context context, Intent intent) {             
 	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 	            //wifiManager.startScan();//request a scan for access points
-	        	int k = 1;
+	        	/*int k = 1;
 	        	wifiResult += "Scan #" + (count + 1) + "\n";
 	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
 	                for(final ScanResult result : results){
 	                	wifiResult += (k++) + " : " + result.BSSID + " " 
 	                			+ result.SSID + " " + result.level + "\n";
-	            }
+	            }*/
 	            count++;
 	        }
 	    }
