@@ -68,7 +68,7 @@
                 android:layout_width="fill_parent"
                 android:background="#cccccc"
                 android:padding="18dip"
-                android:text="位置标签"
+                android:text="房间名"
                 android:textColor="#000"
                 android:textSize="14sp" />
 
@@ -189,6 +189,19 @@
                 android:gravity="center_horizontal"
                 android:text="下面要显示服务器的返回值"
                 android:textSize="14sp" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+
+            <Button
+                android:id="@+id/btn_train"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="3"
+                android:text="测试" />
         </TableRow>
 <!-- 
         <TableRow

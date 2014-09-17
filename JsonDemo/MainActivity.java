@@ -55,9 +55,11 @@ public class MainActivity extends Activity {
 	
 	private Button mBtnLogin;
 	private Button mBtnWifi;
+	private Button mBtnTrain;
 	
 	private WifiTask wifiTask;
 	private MyTask mTask;
+	private TrainTask trainTask;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class MainActivity extends Activity {
 		
 		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
+		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		
 		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -104,6 +107,14 @@ public class MainActivity extends Activity {
 				wifiTask.execute();
 			}	
 		});
+		
+		mBtnTrain.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v){
+				trainTask = new TrainTask();
+				trainTask.execute();
+			}	
+		});
 	}
 	
 	
@@ -113,7 +124,8 @@ public class MainActivity extends Activity {
 	 *  2. 将用户信息通过param用HttpPost发送给server
 	 */
 	
-	class WifiTask extends AsyncTask<Void, Integer, String> {
+	class WifiTask extends AsyncTask<Void, Integer, String> 
+	{
 		final public double LN10 = Math. log(10);
 		final public int NUMBER_OF_TESTS = 5;
 		private int count = 0;
@@ -239,7 +251,51 @@ public class MainActivity extends Activity {
 	        }
 	    }
 	}
-		
+	
+	class TrainTask extends AsyncTask<String, Void, String>
+	{
+
+		@Override
+		protected String doInBackground(String... params) 
+		{
+			// TODO Auto-generated method stub
+			HttpClient hc = new DefaultHttpClient();
+			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
+			String address = "http://" + (mEtServerIP).getText().toString() + ":8080/ServerJsonDemo/servlet/JsonServlet";
+			HttpPost hp = new HttpPost(address);
+			List<NameValuePair> param = new ArrayList<NameValuePair>();
+			param.add(new BasicNameValuePair("type", "test"));
+			// String str=null;
+			try
+			{
+				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
+				// 发送请求
+				HttpResponse response = hc.execute(hp);
+				// 返回200即请求成功
+				if (response.getStatusLine().getStatusCode() == 200) 
+				{	
+					System.out.println("训练成功");
+				} 
+				else 
+				{
+					System.out.println("连接失败");
+				}
+			}
+			catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//返回包好user信息的str
+			return null;
+		}
+	}
+
 	class MyTask extends AsyncTask<String, Void, String> {
 
 		@Override
