@@ -31,8 +31,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -45,7 +51,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.net.wifi.*;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener{
 	//server IP, for example 101.5.155.101:8080
 	private EditText mEtServerIP;
 	//position coordinate
@@ -54,6 +60,8 @@ public class MainActivity extends Activity {
 	//private EditText inZ;
 	//position label
 	private EditText inPos;
+	//the angle between the map and north (i.e.: east = 90)
+	private EditText inOrient;
 	
 	private TextView mWifiResult;
 	private TextView mTvResult;
@@ -68,6 +76,13 @@ public class MainActivity extends Activity {
 	private MyTask mTask;
 	private TrainTask trainTask;
 	
+	private float orientOfMap;
+	private float orientOfDevice;
+	
+	//orientation sensor
+	private SensorManager mSensorManager;
+	private Sensor mOrientation;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +96,7 @@ public class MainActivity extends Activity {
 		inY = (EditText) findViewById(R.id.editY);
 		//inZ = (EditText) findViewById(R.id.editZ);
 		inPos = (EditText) findViewById(R.id.editPosition);
+		inOrient = (EditText) findViewById(R.id.editOrient);
 		
 		mWifiResult = (TextView) findViewById(R.id.wifi_result);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
@@ -89,31 +105,13 @@ public class MainActivity extends Activity {
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		
-		//display map
-		BitmapFactory.Options myOptions = new BitmapFactory.Options();
-	    myOptions.inDither = true;
-	    myOptions.inScaled = false;
-	    myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// important
-	    myOptions.inPurgeable = true;
-
-	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.map,myOptions);
-	    Paint paint = new Paint();
-	    paint.setAntiAlias(true);
-	    paint.setColor(Color.BLUE);
-
-	    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
-	    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-	    Canvas canvas = new Canvas(mutableBitmap);
-	    canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, 10, paint);
-
-	    ImageView imageView = (ImageView) findViewById(R.id.img_map);
-	    imageView.setAdjustViewBounds(true);
-	    imageView.setImageBitmap(mutableBitmap);
-		//end the display of map
+	    //orientation sensor
+	    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	    mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+	    //end of orientation
 	    
 		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
-
+		
 		/**
 		 *  处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
 		 */
@@ -455,5 +453,77 @@ public class MainActivity extends Activity {
 	            finished = true;
 	        }
 	    }
+	}
+	
+	public void displayMap(double posX, double posY) {
+		BitmapFactory.Options myOptions = new BitmapFactory.Options();
+	    myOptions.inDither = true;
+	    myOptions.inScaled = false;
+	    myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// important
+	    myOptions.inPurgeable = true;
+	    
+	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.map,myOptions);
+	    Paint paint = new Paint();
+	    paint.setAntiAlias(true);
+	    paint.setColor(Color.RED);
+	    //paint.setStyle(Paint.Style.STROKE);
+	    //paint.setStrokeWidth(2);
+	    paint.setStyle(Paint.Style.FILL);
+
+	    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
+	    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+	    Canvas canvas = new Canvas(mutableBitmap);
+
+	    orientOfMap = Float.parseFloat((inOrient).getText().toString());
+	    
+	    Matrix matrix = new Matrix();
+	    matrix.setRotate(orientOfDevice - orientOfMap + 180);
+
+	    Path path = new Path();
+	    path.setFillType(Path.FillType.EVEN_ODD);
+	    path.moveTo(0, -20);
+	    path.lineTo(7, 0);
+	    path.lineTo(-7, 0);
+	    path.close();
+	    path.transform(matrix);
+	    path.offset(canvas.getWidth() * (float)posX, canvas.getHeight() * (float)posY);
+			    
+	    canvas.drawPath(path, paint);
+			    
+	    //offset is cumulative
+	    //next draw displaces 50,100 from previous
+	    ImageView imageView = (ImageView) findViewById(R.id.img_map);
+	    imageView.setAdjustViewBounds(true);
+	    imageView.setImageBitmap(mutableBitmap);
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		float azimuth_angle = event.values[0];
+		orientOfDevice = azimuth_angle;
+		displayMap(0.5, 0.5);
+		//azimuth_angle is the angle between magnetic north and the device's y axis
+	    //float pitch_angle = event.values[1];
+	    //float roll_angle = event.values[2];
+	    // Do something with these orientation angles.
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	    mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    mSensorManager.unregisterListener(this);
 	}
 }
