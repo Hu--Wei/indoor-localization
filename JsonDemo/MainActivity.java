@@ -328,7 +328,7 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("num", results.size() + ""));
 			int idx = 0;
 			for (ScanResult result : results) {
-				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + result.level));
+				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + "&" + result.level));
 			}
 			String str=null;
 			try {
@@ -393,18 +393,18 @@ public class MainActivity extends Activity {
 			String pos = null, x = null, y = null, str = null;
 			mStrResult = EntityUtils.toString(response.getEntity());
 			// 将返回结果生成JSON对象，返回的格式首先是user数组
-			JSONArray userarray = new JSONObject(mStrResult).getJSONArray("users" );
+			JSONObject result = new JSONObject(mStrResult);
 			//从user数组中提取出user的信息
 			//对于同名用户，只获取最后一条信息 //改成了只获取第一条
-            for(int i = userarray.length() - 1; i >= 0; i--) {
-            	JSONObject userInfo = userarray.getJSONObject(i);
-                pos = userInfo.getString("pos" );
-                x = userInfo.getString("x");
-                y = userInfo.getString("y" );
+            //for(int i = userarray.length() - 1; i >= 0; i--) {
+            	//JSONObject userInfo = userarray.getJSONObject(i);
+                pos = result.getString("pos" );
+                x = result.getString("x");
+                y = result.getString("y" );
                 //z = userInfo.getString("z");
                 str = "房间: " + pos + " X: " + x + " Y: " + y;
                 System.out.println(str);
-            }
+            //}
             
             return str;
 			//return wifiResult;
