@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
 				//mStrName = (mEtName).getText().toString();
 				// AsyncTask异步任务开始
 				mTask = new MyTask();
-				mTask.execute("");
+				mTask.execute();
 			}
 		});
 		
@@ -294,15 +294,13 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	class MyTask extends AsyncTask<String, Integer, String> {
+	class MyTask extends AsyncTask<Void, Integer, String> {
 		private WifiManager wifi;
-		private String wifiResult = "";
 		private List<ScanResult> results = null;
-		private int progress;
 		boolean finished = false;
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected String doInBackground(Void... params) {
 			publishProgress(0);
 			WifiReceiver receiver = new WifiReceiver();
 			registerReceiver(receiver, new IntentFilter(
@@ -398,7 +396,7 @@ public class MainActivity extends Activity {
 			JSONArray userarray = new JSONObject(mStrResult).getJSONArray("users" );
 			//从user数组中提取出user的信息
 			//对于同名用户，只获取最后一条信息 //改成了只获取第一条
-            for(int i=userarray.length()-1; i>=0;i--) {
+            for(int i = userarray.length() - 1; i >= 0; i--) {
             	JSONObject userInfo = userarray.getJSONObject(i);
                 pos = userInfo.getString("pos" );
                 x = userInfo.getString("x");
