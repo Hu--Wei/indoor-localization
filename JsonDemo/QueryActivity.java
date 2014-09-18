@@ -3,11 +3,7 @@ package com.jsondemo.activity;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
@@ -18,7 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,15 +29,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -51,28 +43,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.net.wifi.*;
 
-public class MainActivity extends Activity implements SensorEventListener{
+public class QueryActivity extends Activity implements SensorEventListener{
 	//server IP, for example 101.5.155.101:8080
 	private EditText mEtServerIP;
-	//position coordinate
-	private EditText inX;
-	private EditText inY;
-	//private EditText inZ;
-	//position label
-	private EditText inPos;
 	//the angle between the map and north (i.e.: east = 90)
 	private EditText inOrient;
 	
-	private TextView mWifiResult;
 	private TextView mTvResult;
 	
 	private String mStrResult;
 	
 	private Button mBtnLogin;
-	private Button mBtnWifi;
 	private Button mBtnTrain;
 	
-	private WifiTask wifiTask;
 	private MyTask mTask;
 	private TrainTask trainTask;
 	
@@ -88,20 +71,12 @@ public class MainActivity extends Activity implements SensorEventListener{
 		super.onCreate(savedInstanceState);
 		
 		//显示app的界面
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.query_main);
 		
 		//获取app的组件信息
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
-		inX = (EditText) findViewById(R.id.editX);
-		inY = (EditText) findViewById(R.id.editY);
-		//inZ = (EditText) findViewById(R.id.editZ);
-		inPos = (EditText) findViewById(R.id.editPosition);
 		inOrient = (EditText) findViewById(R.id.editOrient);
-		
-		mWifiResult = (TextView) findViewById(R.id.wifi_result);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
-		
-		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		
@@ -110,8 +85,6 @@ public class MainActivity extends Activity implements SensorEventListener{
 	    mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 	    //end of orientation
 	    
-		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
-		
 		/**
 		 *  处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
 		 */
@@ -127,14 +100,6 @@ public class MainActivity extends Activity implements SensorEventListener{
 			}
 		});
 		
-		mBtnWifi.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v){
-				wifiTask = new WifiTask();
-				wifiTask.execute();
-			}	
-		});
-		
 		mBtnTrain.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v){
@@ -144,140 +109,6 @@ public class MainActivity extends Activity implements SensorEventListener{
 		});
 	}
 	
-	
-	/**
-	 *  数据库输入线程的具体任务，包括：
-	 *  1. 连接servlet
-	 *  2. 将用户信息通过param用HttpPost发送给server
-	 */
-	
-	class WifiTask extends AsyncTask<Void, Integer, String> 
-	{
-		final public double LN10 = Math. log(10);
-		final public int NUMBER_OF_TESTS = 5;
-		private int count = 0;
-		private WifiManager wifi;
-		private String wifiResult = "";
-		private Map<String, Double> map = new HashMap<String, Double>();
-		private List<ScanResult> results = null;
-		private void updateMap() {
-			results = wifi.getScanResults();
-			for (ScanResult result : results) {
-				if (map.containsKey(result.BSSID)) {
-					Double sum = map.get(result.BSSID);
-					sum += Math.exp(result.level * LN10 / 10);
-					map.put(result.BSSID, sum);
-				}
-				else 
-					map.put(result.BSSID, Math.exp(result.level * LN10 / 10));
-			}								
-		}
-		@Override
-		protected String doInBackground(Void... params) {
-			publishProgress(0);
-			WifiReceiver receiver = new WifiReceiver();
-			registerReceiver(receiver, new IntentFilter(
-					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-			count = 0;
-			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-			map.clear();
-			for (int i = 0; i < NUMBER_OF_TESTS; i++) {
-				wifi.startScan();
-				if (i > 0) 
-					updateMap();
-				while (count <= i) {
-					try {
-						Thread.sleep(100);
-					}
-					catch (InterruptedException e) {
-					}
-				}
-				if (i == NUMBER_OF_TESTS - 1)
-					updateMap();
-				publishProgress(i + 1);
-			}
-
-			//通过HttpPost连接servlet
-			HttpClient hc = new DefaultHttpClient();
-			String address = "http://" + (mEtServerIP).getText().toString() + ":8080/ServerJsonDemo/servlet/JsonServlet";
-			HttpPost hp = new HttpPost(address);
-			String strPos = inPos.getText().toString();
-			String strX = inX.getText().toString();
-			String strY = inY.getText().toString();
-			//String strZ = inZ.getText().toString();
-			
-			//通过param发送参数给servlet
-			List<NameValuePair> param = new ArrayList<NameValuePair>();
-			param.add(new BasicNameValuePair("type", "input"));
-			param.add(new BasicNameValuePair("pos", strPos));
-			param.add(new BasicNameValuePair("x", strX));
-			param.add(new BasicNameValuePair("y", strY));
-			//param.add(new BasicNameValuePair("z", strZ));
-			param.add(new BasicNameValuePair("num", map.size() + ""));
-			int idx = 0;
-
-			Iterator<Map.Entry<String, Double>> it = map.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, Double> entry = (Map.Entry<String, Double>) it.next();
-				param.add(new BasicNameValuePair((idx++) + "", entry.getKey() + "&" + 
-						10 * Math.log10(entry.getValue() / NUMBER_OF_TESTS)));
-			}
-
-			try{
-				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); 
-				// 发送请求
-				HttpResponse response = hc.execute(hp);
-				// 返回200即请求成功
-				if (response.getStatusLine().getStatusCode() == 200) {
-					//数据写入成功
-					wifiResult += "上传成功";
-				} else {
-					wifiResult += "连接失败";
-				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return wifiResult;
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			//在文本框中显示wifi信息
-			mWifiResult.setText(result);
-		}
-		
-		@Override
-		protected void onProgressUpdate(Integer ... values) {
-			super.onProgressUpdate(values);
-			String s = values[0] > 1? "s": "";
-			mWifiResult.setText(values[0] + " scan" + s + " finished!");
-		}
-		
-		class WifiReceiver extends BroadcastReceiver {
-	        @Override
-	        public void onReceive(Context context, Intent intent) {             
-	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-	            //wifiManager.startScan();//request a scan for access points
-	        	int k = 1;
-	        	wifiResult += "Scan #" + (count + 1) + "\n";
-	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
-	                for(final ScanResult result : results){
-	                	wifiResult += (k++) + " : " + result.BSSID + " " 
-	                			+ result.SSID + " " + result.level + "\n";
-	            }
-	            count++;
-	        }
-	    }
-	}
 	
 	class TrainTask extends AsyncTask<String, Void, String>
 	{
@@ -425,31 +256,17 @@ public class MainActivity extends Activity implements SensorEventListener{
 			JSONObject result = new JSONObject(mStrResult);
 			//从user数组中提取出user的信息
 			//对于同名用户，只获取最后一条信息 //改成了只获取第一条
-            //for(int i = userarray.length() - 1; i >= 0; i--) {
-            	//JSONObject userInfo = userarray.getJSONObject(i);
-                pos = result.getString("pos" );
-                x = result.getString("x");
-                y = result.getString("y" );
-                //z = userInfo.getString("z");
-                str = "房间: " + pos + " X: " + x + " Y: " + y;
-                System.out.println(str);
-            //}
+            pos = result.getString("pos" );
+            x = result.getString("x");
+            y = result.getString("y" );
+            str = "房间: " + pos + " X: " + x + " Y: " + y;
+            System.out.println(str);
             
             return str;
-			//return wifiResult;
 		}
 		class WifiReceiver extends BroadcastReceiver {
 	        @Override
 	        public void onReceive(Context context, Intent intent) {             
-	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-	            //wifiManager.startScan();//request a scan for access points
-	        	/*int k = 1;
-	        	//wifiResult += "Scan #" + (count + 1) + "\n";
-	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
-	                for(final ScanResult result : results){
-	                	wifiResult += (k++) + " : " + result.BSSID + " " 
-	                			+ result.SSID + " " + result.level + "\n";
-	            }*/
 	            finished = true;
 	        }
 	    }
