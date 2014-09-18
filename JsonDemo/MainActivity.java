@@ -46,12 +46,11 @@ public class MainActivity extends Activity {
 	//private EditText inZ;
 	//position label
 	private EditText inPos;
-	private EditText mEtName;
 	
 	private TextView mWifiResult;
 	private TextView mTvResult;
 	
-	private String mStrName, mStrResult;
+	private String mStrResult;
 	
 	private Button mBtnLogin;
 	private Button mBtnWifi;
@@ -74,7 +73,6 @@ public class MainActivity extends Activity {
 		inY = (EditText) findViewById(R.id.editY);
 		//inZ = (EditText) findViewById(R.id.editZ);
 		inPos = (EditText) findViewById(R.id.editPosition);
-		mEtName = (EditText) findViewById(R.id.et_hello);
 		
 		mWifiResult = (TextView) findViewById(R.id.wifi_result);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
@@ -93,10 +91,10 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				mStrName = (mEtName).getText().toString();
+				//mStrName = (mEtName).getText().toString();
 				// AsyncTask异步任务开始
 				mTask = new MyTask();
-				mTask.execute(mStrName);
+				mTask.execute("");
 			}
 		});
 		
@@ -297,9 +295,27 @@ public class MainActivity extends Activity {
 	}
 
 	class MyTask extends AsyncTask<String, Void, String> {
+		private WifiManager wifi;
+		private String wifiResult = "";
+		private List<ScanResult> results = null;
+		boolean finished = false;
 
 		@Override
 		protected String doInBackground(String... params) {
+			WifiReceiver receiver = new WifiReceiver();
+			registerReceiver(receiver, new IntentFilter(
+					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			wifi.startScan();
+			
+			while (!finished) {
+				try {
+					Thread.sleep(100);
+				} 
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
@@ -307,9 +323,12 @@ public class MainActivity extends Activity {
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair>param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "search"));
-			param.add(new BasicNameValuePair("name", params[0]));
-			
-			
+			results = wifi.getScanResults();
+			param.add(new BasicNameValuePair("num", results.size() + ""));
+			int idx = 0;
+			for (ScanResult result : results) {
+				param.add(new BasicNameValuePair((idx++) + "", result.BSSID + result.level));
+			}
 			String str=null;
 			try {
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); //jsonObj.toString()));
@@ -320,7 +339,7 @@ public class MainActivity extends Activity {
 					// 获取响应中的数据，这也是一个JSON格式的数据
 					str = PhaseJson(response);
 				} else {
-					System.out.println("连接失败");
+					return "连接失败";
 				}
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -356,7 +375,7 @@ public class MainActivity extends Activity {
 		 */
 		String PhaseJson(HttpResponse response) throws ParseException, IOException, JSONException
 		{
-			String age = null, id = null, name=null, sex=null, str=null;
+			String pos = null, x = null, y = null, z = null, str = null;
 			mStrResult = EntityUtils.toString(response.getEntity());
 			// 将返回结果生成JSON对象，返回的格式首先是user数组
 			JSONArray userarray = new JSONObject(mStrResult).getJSONArray("users" );
@@ -364,16 +383,31 @@ public class MainActivity extends Activity {
 			//对于同名用户，只获取最后一条信息 //改成了只获取第一条
             for(int i=userarray.length()-1; i>=0;i--) {
             	JSONObject userInfo = userarray.getJSONObject(i);
-                id = userInfo.getString("id" );
-                name = userInfo.getString("name");
-                age = userInfo.getString("age" );
-                sex = userInfo.getString("sex");
-                str = "Id: " + id + " Name: " + name + " Age: " + age + " Sex: " + sex;
+                pos = userInfo.getString("pos" );
+                x = userInfo.getString("x");
+                y = userInfo.getString("y" );
+                z = userInfo.getString("z");
+                str = "房间: " + pos + " X: " + x + " Y: " + y + " Z: " + z;
                 System.out.println(str);
             }
             
             return str;
 			//return wifiResult;
 		}
+		class WifiReceiver extends BroadcastReceiver {
+	        @Override
+	        public void onReceive(Context context, Intent intent) {             
+	            //WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+	            //wifiManager.startScan();//request a scan for access points
+	        	/*int k = 1;
+	        	//wifiResult += "Scan #" + (count + 1) + "\n";
+	            final List<ScanResult> results= wifi.getScanResults();//list of access points from the last scan
+	                for(final ScanResult result : results){
+	                	wifiResult += (k++) + " : " + result.BSSID + " " 
+	                			+ result.SSID + " " + result.level + "\n";
+	            }*/
+	            finished = true;
+	        }
+	    }
 	}
 }

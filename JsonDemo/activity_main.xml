@@ -127,7 +127,7 @@
             </TableRow>
         
         
-        <TableRow
+        <!--  <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_span="3"
                 android:hint="输入姓名查询数据库" />
-        </TableRow>
+        </TableRow>-->
 
         <TableRow
             android:layout_width="fill_parent"
@@ -152,12 +152,12 @@
                 android:layout_below="@+id/et_hello"
                 android:layout_span="3"
                 android:text="查询" />
-        </TableRow>
+        </TableRow> 
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
+            android:gravity="center_horizontal" > 
 
             <TextView
                 android:id="@+id/tv_result"
@@ -170,7 +170,7 @@
                 android:gravity="center_horizontal"
                 android:text="下面要显示服务器的返回值"
                 android:textSize="14sp" />
-        </TableRow>
+        </TableRow> 
         
         <TableRow
             android:layout_width="fill_parent"
@@ -184,94 +184,5 @@
                 android:layout_span="3"
                 android:text="测试" />
         </TableRow>
-<!-- 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal" >
-
-            <TextView
-                android:id="@+id/TextView07"
-                android:layout_width="fill_parent"
-                android:background="#ff0000"
-                android:padding="18dip"
-                android:text="Input Name "
-                android:textColor="#000"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/editname"
-                android:layout_width="fill_parent"
-                android:padding="18dip"
-                android:text="Tom"
-                android:textColor="#000"
-                android:textSize="14sp" />
-        </TableRow> -->
-
-        <!-- Row 2 with two column -->
-<!-- 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <TextView
-                android:id="@+id/TextView08"
-                android:layout_width="fill_parent"
-                android:background="#008000"
-                android:padding="18dip"
-                android:text="Input Age"
-                android:textColor="#000"
-                android:textSize="14dp" />
-
-            <EditText
-                android:id="@+id/editage"
-                android:layout_width="fill_parent"
-                android:padding="18dip"
-                android:text="30"
-                android:textColor="#000"
-                android:textSize="14dp" />
-        </TableRow> -->
-
-        <!-- Row 3 with 2 columns -->
-<!-- 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <TextView
-                android:id="@+id/TextView09"
-                android:layout_width="fill_parent"
-                android:background="#0000ff"
-                android:padding="18dip"
-                android:text="Input Sex"
-                android:textColor="#000"
-                android:textSize="14dp" />
-
-            <EditText
-                android:id="@+id/editsex"
-                android:layout_width="fill_parent"
-                android:padding="18dip"
-                android:text="male"
-                android:textColor="#000"
-                android:textSize="14dp" />
-        </TableRow> -->
-        <!-- Text Edit and Query Button -->
-<!-- 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <Button
-                android:id="@+id/btninput"
-                android:layout_width="fill_parent"
-                android:layout_span="3"
-                android:padding="18dip"
-                android:text="提交"
-                android:textColor="#000" />
-        </TableRow> -->
     </TableLayout>
 </ScrollView> 
