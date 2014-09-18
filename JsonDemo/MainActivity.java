@@ -375,7 +375,7 @@ public class MainActivity extends Activity {
 		 */
 		String PhaseJson(HttpResponse response) throws ParseException, IOException, JSONException
 		{
-			String pos = null, x = null, y = null, z = null, str = null;
+			String pos = null, x = null, y = null, str = null;
 			mStrResult = EntityUtils.toString(response.getEntity());
 			// 将返回结果生成JSON对象，返回的格式首先是user数组
 			JSONArray userarray = new JSONObject(mStrResult).getJSONArray("users" );
@@ -386,8 +386,8 @@ public class MainActivity extends Activity {
                 pos = userInfo.getString("pos" );
                 x = userInfo.getString("x");
                 y = userInfo.getString("y" );
-                z = userInfo.getString("z");
-                str = "房间: " + pos + " X: " + x + " Y: " + y + " Z: " + z;
+                //z = userInfo.getString("z");
+                str = "房间: " + pos + " X: " + x + " Y: " + y;
                 System.out.println(str);
             }
             
