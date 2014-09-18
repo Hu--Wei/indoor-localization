@@ -27,13 +27,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.net.wifi.*;
 
@@ -81,6 +89,29 @@ public class MainActivity extends Activity {
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		
+		//display map
+		BitmapFactory.Options myOptions = new BitmapFactory.Options();
+	    myOptions.inDither = true;
+	    myOptions.inScaled = false;
+	    myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// important
+	    myOptions.inPurgeable = true;
+
+	    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.map,myOptions);
+	    Paint paint = new Paint();
+	    paint.setAntiAlias(true);
+	    paint.setColor(Color.BLUE);
+
+	    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
+	    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+	    Canvas canvas = new Canvas(mutableBitmap);
+	    canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, 10, paint);
+
+	    ImageView imageView = (ImageView) findViewById(R.id.img_map);
+	    imageView.setAdjustViewBounds(true);
+	    imageView.setImageBitmap(mutableBitmap);
+		//end the display of map
+	    
 		mWifiResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 
 		/**

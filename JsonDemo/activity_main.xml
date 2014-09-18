@@ -184,5 +184,12 @@
                 android:layout_span="3"
                 android:text="测试" />
         </TableRow>
+        
+        <ImageView 
+			   android:id="@+id/img_map"
+			   android:src="@drawable/map"
+			   android:layout_width="wrap_content"
+			   android:layout_height="wrap_content"
+			   />
     </TableLayout>
 </ScrollView> 
