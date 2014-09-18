@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 	//position coordinate
 	private EditText inX;
 	private EditText inY;
-	private EditText inZ;
+	//private EditText inZ;
 	//position label
 	private EditText inPos;
 	private EditText mEtName;
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
 		inX = (EditText) findViewById(R.id.editX);
 		inY = (EditText) findViewById(R.id.editY);
-		inZ = (EditText) findViewById(R.id.editZ);
+		//inZ = (EditText) findViewById(R.id.editZ);
 		inPos = (EditText) findViewById(R.id.editPosition);
 		mEtName = (EditText) findViewById(R.id.et_hello);
 		
@@ -177,7 +177,7 @@ public class MainActivity extends Activity {
 			String strPos = inPos.getText().toString();
 			String strX = inX.getText().toString();
 			String strY = inY.getText().toString();
-			String strZ = inZ.getText().toString();
+			//String strZ = inZ.getText().toString();
 			
 			//通过param发送参数给servlet
 			List<NameValuePair> param = new ArrayList<NameValuePair>();
@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
 			param.add(new BasicNameValuePair("pos", strPos));
 			param.add(new BasicNameValuePair("x", strX));
 			param.add(new BasicNameValuePair("y", strY));
-			param.add(new BasicNameValuePair("z", strZ));
+			//param.add(new BasicNameValuePair("z", strZ));
 			param.add(new BasicNameValuePair("num", map.size() + ""));
 			int idx = 0;
 
@@ -308,6 +308,8 @@ public class MainActivity extends Activity {
 			List<NameValuePair>param = new ArrayList<NameValuePair>();
 			param.add(new BasicNameValuePair("type", "search"));
 			param.add(new BasicNameValuePair("name", params[0]));
+			
+			
 			String str=null;
 			try {
 				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8")); //jsonObj.toString()));

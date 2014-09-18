@@ -21,7 +21,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/et_hello"
                 android:layout_span="3"
-                android:text="扫描wifi" />
+                android:text="上传" />
         </TableRow>
 
         <TableRow
@@ -68,7 +68,7 @@
                 android:layout_width="fill_parent"
                 android:background="#cccccc"
                 android:padding="18dip"
-                android:text="房间名"
+                android:text="房间"
                 android:textColor="#000"
                 android:textSize="14sp" />
 
@@ -118,25 +118,6 @@
 
             <EditText
                 android:id="@+id/editY"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="14sp" />
-            
-            <TextView
-                android:id="@+id/TextViewZ"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:background="#777777"
-                android:padding="18dip"
-                android:text="Z"
-                android:textColor="#000"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/editZ"
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:padding="18dip"
