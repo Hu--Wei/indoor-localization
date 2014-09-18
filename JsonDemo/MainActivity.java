@@ -374,10 +374,10 @@ public class MainActivity extends Activity {
 			super.onProgressUpdate(values);
 			switch (values[0]) {
 				case 0: 
-					mWifiResult.setText("正在扫描Wifi");
+					mTvResult.setText("正在扫描Wifi");
 					break;
 				case 1:
-					mWifiResult.setText("扫描成功，正在查询");
+					mTvResult.setText("扫描成功，正在查询");
 					break;
 			}
 		}
