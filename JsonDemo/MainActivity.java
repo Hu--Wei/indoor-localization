@@ -294,14 +294,16 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	class MyTask extends AsyncTask<String, Void, String> {
+	class MyTask extends AsyncTask<String, Integer, String> {
 		private WifiManager wifi;
 		private String wifiResult = "";
 		private List<ScanResult> results = null;
+		private int progress;
 		boolean finished = false;
 
 		@Override
 		protected String doInBackground(String... params) {
+			publishProgress(0);
 			WifiReceiver receiver = new WifiReceiver();
 			registerReceiver(receiver, new IntentFilter(
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
@@ -316,6 +318,7 @@ public class MainActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
+			publishProgress(1);
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
@@ -365,6 +368,20 @@ public class MainActivity extends Activity {
 			//在文本框中显示user信息
 			mTvResult.setText(result);
 		}
+
+		@Override
+		protected void onProgressUpdate(Integer ... values) {
+			super.onProgressUpdate(values);
+			switch (values[0]) {
+				case 0: 
+					mWifiResult.setText("正在扫描Wifi");
+					break;
+				case 1:
+					mWifiResult.setText("扫描成功，正在查询");
+					break;
+			}
+		}
+
 		/**
 		 * 处理HttpResponse返回的response信息，从体重提取name, sex, age等信息
 		 * @param response
