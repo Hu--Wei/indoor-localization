@@ -117,6 +117,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 				trainTask.execute();
 			}
 		});
+		mSensorManager.registerListener(this, mOrientation,
+				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	class TrainTask extends AsyncTask<String, Void, String> {
@@ -327,7 +329,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		path.transform(matrix);
 		path.offset(canvas.getWidth() * (float) posX, canvas.getHeight()
 				* (float) posY);
-
+		
+		
 		canvas.drawPath(path, paint);
 
 		// offset is cumulative
