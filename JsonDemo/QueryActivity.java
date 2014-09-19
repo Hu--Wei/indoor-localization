@@ -58,7 +58,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	private Button mBtnLogin;
 	private Button mBtnTrain;
 
-	private MyTask mTask;
+	private QueryTask mTask;
 	private TrainTask trainTask;
 
 	private float orientOfMap;
@@ -105,7 +105,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 				// mStrName = (mEtName).getText().toString();
 				// AsyncTask异步任务开始
 				bar1.setVisibility(View.VISIBLE);
-				mTask = new MyTask();
+				mTask = new QueryTask();
 				mTask.execute();
 			}
 		});
@@ -157,7 +157,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		}
 	}
 
-	class MyTask extends AsyncTask<Void, Integer, String> {
+	class QueryTask extends AsyncTask<Void, Integer, String> {
 		private WifiManager wifi;
 		private List<ScanResult> results = null;
 		private boolean finished = false;

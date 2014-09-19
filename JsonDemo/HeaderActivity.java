@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
@@ -29,7 +28,6 @@ public class HeaderActivity extends Activity {
 	Context context = null;
     LocalActivityManager manager = null;
     private ViewPager pager = null; //页卡内容
-    private TabHost tabHost = null;
 	private ImageView cursor;// 动画图片
 	private TextView t1, t2;// 页卡头标
 	private int offset = 0;// 动画图片偏移量
