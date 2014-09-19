@@ -8,7 +8,7 @@ Positions of the files:
 /JsonDema/AndroidManifest.xml
 /JsonDemo/res/drawable-hdpi/bar.png
 /JsonDemo/res/drawable-hdpi/map.png
-
+/JsonDemo/res/values/strings.xml
 
 The format of Json transmission:
 
