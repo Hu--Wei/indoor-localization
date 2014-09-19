@@ -230,6 +230,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			if (duration > 3000)
 				expectedTime = duration;
 			// 返回包好user信息的str
+			unregisterReceiver(receiver);
 			return str;
 		}
 

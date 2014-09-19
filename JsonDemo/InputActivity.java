@@ -127,7 +127,8 @@ public class InputActivity extends Activity {
 				while (count <= i) {
 					try {
 						Thread.sleep(100);
-						progress += 100;
+						if (progress + 100 <= expectedTime * (i + 1) / NUMBER_OF_TESTS)
+							progress += 100;
 						publishProgress(progress, i);
 					} catch (InterruptedException e) {
 					}
@@ -189,6 +190,7 @@ public class InputActivity extends Activity {
 			bar2.setProgress(100);
 			duration = System.currentTimeMillis() - startTime;
 			expectedTime = duration;
+			unregisterReceiver(receiver);	
 			return wifiResult;
 		}
 
