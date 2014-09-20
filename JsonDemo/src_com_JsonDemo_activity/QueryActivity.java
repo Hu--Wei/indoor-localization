@@ -43,6 +43,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.net.wifi.*;
 
 public class QueryActivity extends Activity implements SensorEventListener {
@@ -119,6 +120,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 				bar1.setVisibility(View.VISIBLE);
 				mTask = new QueryTask();
 				mTask.execute();
+				Toast.makeText(QueryActivity.this,
+						"Locating...", Toast.LENGTH_SHORT).show();
 			}
 		});
 

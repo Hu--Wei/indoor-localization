@@ -4,11 +4,10 @@
     android:fadingEdge="vertical" >
 
     <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="#ffffff"
-        android:shrinkColumns="*"
-        android:stretchColumns="*" >
+        android:stretchColumns="1" >
 
         <TableRow
             android:layout_width="fill_parent"
@@ -30,12 +29,14 @@
 
             <Button
                 android:id="@+id/btn_login"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/et_hello"
-                android:layout_span="3"
-                android:text="查询" />
+                android:background="@drawable/my_button"
+                android:padding="10dp"
+                android:text="Locate"
+                android:textColor="#ffffff" />
         </TableRow>
+
 
         <TableRow
             android:layout_width="fill_parent"
@@ -52,14 +53,13 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:gravity="center_horizontal" >
 
             <TextView
                 android:id="@+id/tv_result"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_login"
                 android:layout_marginTop="20dp"
                 android:layout_span="3"
                 android:background="#eee"
@@ -80,7 +80,6 @@
                 android:layout_span="3"
                 android:text="测试" />
         </TableRow>
-
 
         <ImageView
             android:id="@+id/img_map"
