@@ -68,10 +68,14 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	// progress bar
 	private ProgressBar bar1;
 	private double expectedTime = 4000;
-	
-	//position (left-down corner is 0, 0)
-	float posX;//0 ~ 1
-	float posY;//0 ~ 1
+
+	// position (left-down corner is 0, 0)
+	float posX;// 0 ~ 1
+	float posY;// 0 ~ 1
+
+	// wifi manager
+	private WifiManager wifi;
+	WifiReceiver receiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +98,13 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 		// progress bar
 		bar1 = (ProgressBar) findViewById(R.id.bar1);
-		
-		//position initialization
+
+		// position initialization
 		posX = 0.5f;
 		posY = 0.5f;
+
+		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		receiver = new WifiReceiver();
 
 		/**
 		 * 处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
@@ -163,9 +170,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	}
 
 	class QueryTask extends AsyncTask<Void, Integer, String> {
-		private WifiManager wifi;
 		private List<ScanResult> results = null;
-		private boolean finished = false;
+		public boolean finished = false;
 		private int progress;
 		private long startTime, duration;
 
@@ -174,10 +180,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			startTime = System.currentTimeMillis();
 			progress = 0;
 			publishProgress(0, 0);
-			WifiReceiver receiver = new WifiReceiver();
 			registerReceiver(receiver, new IntentFilter(
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 			wifi.startScan();
 
 			while (!finished) {
@@ -284,18 +288,18 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			y = result.getString("y");
 			str = "房间: " + pos + " X: " + x + " Y: " + y;
 			System.out.println(str);
-			
+
 			posX = Float.parseFloat(x) / (float) 6.5;
 			posY = Float.parseFloat(y) / (float) 16.5;
 
 			return str;
 		}
+	}
 
-		class WifiReceiver extends BroadcastReceiver {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				finished = true;
-			}
+	class WifiReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			mTask.finished = true;
 		}
 	}
 
@@ -329,7 +333,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		path.lineTo(-10, 0);
 		path.close();
 		path.transform(matrix);
-		path.offset(canvas.getWidth() * (float) posX, canvas.getHeight() * (1 - (float) posY));
+		path.offset(canvas.getWidth() * (float) posX, canvas.getHeight()
+				* (1 - (float) posY));
 
 		canvas.drawPath(path, paint);
 

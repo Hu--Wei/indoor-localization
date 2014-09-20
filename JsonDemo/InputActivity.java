@@ -41,7 +41,7 @@ public class InputActivity extends Activity {
 	private EditText inY;
 	// position label
 	private EditText inPos;
-	// the angle between the map and north (i.e.: east = 90)
+
 	private TextView mWifiResult;
 	private Button mBtnWifi;
 	private WifiTask wifiTask;
@@ -49,6 +49,10 @@ public class InputActivity extends Activity {
 	// progress bar
 	private ProgressBar bar2;
 	private double expectedTime = 20000;
+
+	//wifi manager
+	private WifiManager wifi;
+	private WifiReceiver receiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,8 @@ public class InputActivity extends Activity {
 			}
 		});
 
+		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		receiver = new WifiReceiver();
 	}
 
 	/**
@@ -89,9 +95,8 @@ public class InputActivity extends Activity {
 	class WifiTask extends AsyncTask<Void, Integer, String> {
 		final public double LN10 = Math.log(10);
 		final public int NUMBER_OF_TESTS = 5;
-		private int count = 0;
-		private WifiManager wifi;
-		private String wifiResult = "";
+		public int count = 0;
+		public String wifiResult = "";
 		private Map<String, Double> map = new HashMap<String, Double>();
 		private List<ScanResult> results = null;
 		private int progress;
@@ -114,11 +119,10 @@ public class InputActivity extends Activity {
 			startTime = System.currentTimeMillis();
 			progress = 0;
 			publishProgress(0, 0);
-			WifiReceiver receiver = new WifiReceiver();
+			count = 0;
 			registerReceiver(receiver, new IntentFilter(
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-			count = 0;
-			wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+
 			map.clear();
 			for (int i = 0; i < NUMBER_OF_TESTS; i++) {
 				wifi.startScan();
@@ -127,7 +131,8 @@ public class InputActivity extends Activity {
 				while (count <= i) {
 					try {
 						Thread.sleep(100);
-						if (progress + 100 <= expectedTime * (i + 1) / NUMBER_OF_TESTS)
+						if (progress + 100 <= expectedTime * (i + 1)
+								/ NUMBER_OF_TESTS)
 							progress += 100;
 						publishProgress(progress, i);
 					} catch (InterruptedException e) {
@@ -190,7 +195,7 @@ public class InputActivity extends Activity {
 			bar2.setProgress(100);
 			duration = System.currentTimeMillis() - startTime;
 			expectedTime = duration;
-			unregisterReceiver(receiver);	
+			unregisterReceiver(receiver);
 			return wifiResult;
 		}
 
@@ -210,19 +215,20 @@ public class InputActivity extends Activity {
 			bar2.setProgress((int) (values[0] / expectedTime * 100));
 		}
 
-		class WifiReceiver extends BroadcastReceiver {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				int k = 1;
-				wifiResult += "Scan #" + (count + 1) + "\n";
-				final List<ScanResult> results = wifi.getScanResults();
-				// list of access points from the last scan
-				for (final ScanResult result : results) {
-					wifiResult += (k++) + " : " + result.BSSID + " "
-							+ result.SSID + " " + result.level + "\n";
-				}
-				count++;
+	}
+
+	class WifiReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			int k = 1;
+			wifiTask.wifiResult += "Scan #" + (wifiTask.count + 1) + "\n";
+			final List<ScanResult> results = wifi.getScanResults();
+			// list of access points from the last scan
+			for (final ScanResult result : results) {
+				wifiTask.wifiResult += (k++) + " : " + result.BSSID + " " + result.SSID
+						+ " " + result.level + "\n";
 			}
+			wifiTask.count++;
 		}
 	}
 }
