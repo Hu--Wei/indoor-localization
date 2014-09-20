@@ -45,12 +45,14 @@ public class InputActivity extends Activity {
 	private TextView mWifiResult;
 	private Button mBtnWifi;
 	private WifiTask wifiTask;
+	private Button mBtnTrain;
+	private TrainTask trainTask;
 
 	// progress bar
 	private ProgressBar bar2;
 	private double expectedTime = 20000;
 
-	//wifi manager
+	// wifi manager
 	private WifiManager wifi;
 	private WifiReceiver receiver;
 
@@ -70,6 +72,7 @@ public class InputActivity extends Activity {
 		mWifiResult = (TextView) findViewById(R.id.wifi_result);
 
 		mBtnWifi = (Button) findViewById(R.id.btn_wifi);
+		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		// progress bar
 		bar2 = (ProgressBar) findViewById(R.id.bar2);
 
@@ -84,6 +87,14 @@ public class InputActivity extends Activity {
 			}
 		});
 
+		mBtnTrain.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				trainTask = new TrainTask();
+				trainTask.execute();
+			}
+		});
+
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		receiver = new WifiReceiver();
 	}
@@ -91,6 +102,45 @@ public class InputActivity extends Activity {
 	/**
 	 * 数据库输入线程的具体任务，包括： 1. 连接servlet 2. 将用户信息通过param用HttpPost发送给server
 	 */
+
+	class TrainTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			HttpClient hc = new DefaultHttpClient();
+			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
+			String address = "http://" + (mEtServerIP).getText().toString()
+					+ ":8080/ServerJsonDemo/servlet/JsonServlet";
+			HttpPost hp = new HttpPost(address);
+			List<NameValuePair> param = new ArrayList<NameValuePair>();
+			param.add(new BasicNameValuePair("type", "train"));
+			// String str=null;
+			try {
+				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8"));
+				// 发送请求
+				HttpResponse response = hc.execute(hp);
+				// 返回200即请求成功
+				if (response.getStatusLine().getStatusCode() == 200) {
+					System.out.println("训练成功");
+				} else {
+					System.out.println("连接失败");
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// 返回包好user信息的str
+			return null;
+		}
+
+	}
 
 	class WifiTask extends AsyncTask<Void, Integer, String> {
 		final public double LN10 = Math.log(10);
@@ -225,8 +275,8 @@ public class InputActivity extends Activity {
 			final List<ScanResult> results = wifi.getScanResults();
 			// list of access points from the last scan
 			for (final ScanResult result : results) {
-				wifiTask.wifiResult += (k++) + " : " + result.BSSID + " " + result.SSID
-						+ " " + result.level + "\n";
+				wifiTask.wifiResult += (k++) + " : " + result.BSSID + " "
+						+ result.SSID + " " + result.level + "\n";
 			}
 			wifiTask.count++;
 		}
