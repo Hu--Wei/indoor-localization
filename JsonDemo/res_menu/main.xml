@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_submit"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:icon="@drawable/sym_keyboard_ok"
+        android:title="action_submit"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/action_settings"/>
+
+</menu>

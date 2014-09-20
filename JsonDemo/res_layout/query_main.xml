@@ -7,7 +7,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#CCCCCC"
+        android:background="#ffffff"
         android:stretchColumns="1" >
 
         <TableRow
@@ -15,12 +15,12 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
 
-            <EditText
-                android:layout_marginTop="20dp"
+            <TextView
                 android:id="@+id/et_serverip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Server IP, eg.:101.5.155.101" />
+                android:layout_marginTop="20dp"
+                />
         </TableRow>
 
         <TableRow

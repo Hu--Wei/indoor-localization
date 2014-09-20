@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CCCCCC"
+    android:background="#ffffff"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -37,7 +37,7 @@
         android:id="@+id/cursor"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#CCCCCC"
+        android:background="#ffffff"
         android:scaleType="matrix"
         android:src="@drawable/bar" />
 

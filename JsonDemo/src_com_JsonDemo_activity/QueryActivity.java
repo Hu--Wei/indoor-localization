@@ -36,6 +36,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -44,12 +45,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.net.wifi.*;
 
 public class QueryActivity extends Activity implements SensorEventListener {
 	// server IP, for example 101.5.155.101:8080
-	private EditText mEtServerIP;
+	private TextView mEtServerIP;
 
 	private TextView mTvResult;
 
@@ -89,7 +89,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		setContentView(R.layout.query_main);
 
 		// 获取app的组件信息
-		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
+		mEtServerIP = (TextView) findViewById(R.id.et_serverip);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mScrollView = (ScrollView) findViewById(R.id.scrollView);
@@ -112,6 +112,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		receiver = new WifiReceiver();
 
 		heightOfHeader = mEtServerIP.getTop();
+
 		/**
 		 * 处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
 		 */
@@ -158,7 +159,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://" + (mEtServerIP).getText().toString()
+			String address = "http://" + ServerIP.getInstance().getServerIp()
 					+ ":8080/ServerJsonDemo/servlet/JsonServlet";
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair> param = new ArrayList<NameValuePair>();

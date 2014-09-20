@@ -34,8 +34,6 @@ import android.widget.TextView;
 import android.net.wifi.*;
 
 public class InputActivity extends Activity {
-	// server IP, for example 101.5.155.101:8080
-	private EditText mEtServerIP;
 	// position coordinate
 	private EditText inX;
 	private EditText inY;
@@ -64,7 +62,6 @@ public class InputActivity extends Activity {
 		setContentView(R.layout.input_main);
 
 		// 获取app的组件信息
-		mEtServerIP = (EditText) findViewById(R.id.et_serverip2);
 		inX = (EditText) findViewById(R.id.editX);
 		inY = (EditText) findViewById(R.id.editY);
 		inPos = (EditText) findViewById(R.id.editPosition);
@@ -110,7 +107,7 @@ public class InputActivity extends Activity {
 			// TODO Auto-generated method stub
 			HttpClient hc = new DefaultHttpClient();
 			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://" + (mEtServerIP).getText().toString()
+			String address = "http://" + ServerIP.getInstance().getServerIp()
 					+ ":8080/ServerJsonDemo/servlet/JsonServlet";
 			HttpPost hp = new HttpPost(address);
 			List<NameValuePair> param = new ArrayList<NameValuePair>();
@@ -196,7 +193,7 @@ public class InputActivity extends Activity {
 
 			// 通过HttpPost连接servlet
 			HttpClient hc = new DefaultHttpClient();
-			String address = "http://" + (mEtServerIP).getText().toString()
+			String address = "http://" + ServerIP.getInstance().getServerIp()
 					+ ":8080/ServerJsonDemo/servlet/JsonServlet";
 			HttpPost hp = new HttpPost(address);
 			String strPos = inPos.getText().toString();

@@ -4,9 +4,9 @@
     android:fadingEdge="vertical" >
 
     <TableLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#CCCCCC"
+        android:background="#ffffff"
         android:stretchColumns="1" >
 
         <TableRow
@@ -15,11 +15,46 @@
             android:gravity="center_horizontal" >
 
             <EditText
-                android:layout_marginTop="20dp"
-                android:id="@+id/et_serverip2"
+                android:id="@+id/editPosition"
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Server IP, eg.:101.5.155.101" />
+                android:background="@drawable/edittext_top_bg"
+                android:hint="Position"
+                android:padding="10dp"
+                android:textColorHint="#bbbbbb" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+
+            <EditText
+                android:id="@+id/editX"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:background="@drawable/edittext_default_bg"
+                android:hint="X coordinate"
+                android:padding="10dp"
+                android:textColorHint="#bbbbbb" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+
+            <EditText
+                android:id="@+id/editY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:background="@drawable/edittext_bottom_bg"
+                android:hint="Y coordinate"
+                android:padding="10dp"
+                android:textColorHint="#bbbbbb" />
         </TableRow>
 
         <TableRow
@@ -73,73 +108,6 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal|left" >
-
-            <TextView
-                android:id="@+id/TextViewGetPosition"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text="Position: "
-                android:textColor="#000"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/editPosition"
-                android:layout_width="20dp"
-                android:layout_toRightOf="@+id/TextViewGetPosition"
-                android:layout_weight="1"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="20sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <TextView
-                android:id="@+id/TextViewX"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text="X: "
-                android:textColor="#000"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/editX"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/TextViewY"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text="Y: "
-                android:textColor="#000"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/editY"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:padding="18dip"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="20sp" />
-        </TableRow>
-
-        <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
@@ -150,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/my_button"
                 android:padding="10dp"
-                android:text="Upload finished"
+                android:text="UPLOAD FINISHED"
                 android:textColor="#ffffff" />
         </TableRow>
 
