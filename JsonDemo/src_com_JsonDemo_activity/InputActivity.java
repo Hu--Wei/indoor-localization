@@ -228,9 +228,9 @@ public class InputActivity extends Activity {
 				// 返回200即请求成功
 				if (response.getStatusLine().getStatusCode() == 200) {
 					// 数据写入成功
-					wifiResult += "上传成功";
+					wifiResult += "Upload finshed successfully";
 				} else {
-					wifiResult += "连接失败";
+					wifiResult += "Connection failed";
 				}
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -261,7 +261,11 @@ public class InputActivity extends Activity {
 		@Override
 		protected void onProgressUpdate(Integer... values) {
 			super.onProgressUpdate(values);
-			mWifiResult.setText("已完成" + values[1] + "次扫描");
+			if(values[1] == 4 || values[1] == 5) {
+				mWifiResult.setText(NUMBER_OF_TESTS - values[1] + " scan left...");
+			} else {
+				mWifiResult.setText(NUMBER_OF_TESTS - values[1] + " scans left...");
+			}
 			bar2.setProgress((int) (values[0] / expectedTime * 100));
 		}
 
@@ -271,13 +275,15 @@ public class InputActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			int k = 1;
-			wifiTask.wifiResult += "Scan #" + (wifiTask.count + 1) + "\n";
 			final List<ScanResult> results = wifi.getScanResults();
 			// list of access points from the last scan
-			for (final ScanResult result : results) {
-				wifiTask.wifiResult += (k++) + " : " + result.BSSID + " "
-						+ result.SSID + " " + result.level + "\n";
-			}
+			/* scanning result
+			 * wifiTask.wifiResult += "Scan #" + (wifiTask.count + 1) + "\n";
+			 * for (final ScanResult result : results) {
+			 * wifiTask.wifiResult += (k++) + " : " + result.BSSID + " "
+			 * + result.SSID + " " + result.level + "\n";
+			 * }
+			 * */
 			wifiTask.count++;
 		}
 	}

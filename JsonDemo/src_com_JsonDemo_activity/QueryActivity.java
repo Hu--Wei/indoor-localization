@@ -56,13 +56,11 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	private String mStrResult;
 
 	private Button mBtnLogin;
-	private Button mBtnTrain;
-	
+
 	private ScrollView mScrollView;
 	private ImageView imageView;
 
 	private QueryTask mTask;
-	private TrainTask trainTask;
 	private float orientOfDevice;
 
 	// orientation sensor
@@ -94,10 +92,9 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
-		mBtnTrain = (Button) findViewById(R.id.btn_train);
 		mScrollView = (ScrollView) findViewById(R.id.scrollView);
 		imageView = (ImageView) findViewById(R.id.img_map);
-				
+
 		// orientation sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -128,56 +125,9 @@ public class QueryActivity extends Activity implements SensorEventListener {
 				bar1.setVisibility(View.VISIBLE);
 				mTask = new QueryTask();
 				mTask.execute();
-				Toast.makeText(QueryActivity.this,
-						"Locating...", Toast.LENGTH_SHORT).show();
 			}
 		});
 
-		mBtnTrain.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				trainTask = new TrainTask();
-				trainTask.execute();
-			}
-		});
-	}
-
-	class TrainTask extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			HttpClient hc = new DefaultHttpClient();
-			// 这里是服务器的IP，不要写成localhost了，即使在本机测试也要写上本机的IP地址，localhost会被当成模拟器自身的
-			String address = "http://" + (mEtServerIP).getText().toString()
-					+ ":8080/ServerJsonDemo/servlet/JsonServlet";
-			HttpPost hp = new HttpPost(address);
-			List<NameValuePair> param = new ArrayList<NameValuePair>();
-			param.add(new BasicNameValuePair("type", "test"));
-			// String str=null;
-			try {
-				hp.setEntity(new UrlEncodedFormEntity(param, "utf-8"));
-				// 发送请求
-				HttpResponse response = hc.execute(hp);
-				// 返回200即请求成功
-				if (response.getStatusLine().getStatusCode() == 200) {
-					System.out.println("训练成功");
-				} else {
-					System.out.println("连接失败");
-				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// 返回包好user信息的str
-			return null;
-		}
 	}
 
 	class QueryTask extends AsyncTask<Void, Integer, String> {
@@ -261,8 +211,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			// 在文本框中显示user信息
 			mTvResult.setText(result);
 			bar1.setVisibility(View.GONE);
-			int scrollTarget = (int) (imageView.getTop() * posY + 
-					imageView.getBottom() * (1 - posY));
+			int scrollTarget = (int) (imageView.getTop() * posY + imageView
+					.getBottom() * (1 - posY));
 			int screenHeight = mScrollView.getBottom() - mScrollView.getTop();
 			scrollTarget -= screenHeight / 2;
 			int totalHeight = imageView.getBottom() - mEtServerIP.getTop();
@@ -271,9 +221,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			if (scrollTarget > totalHeight - screenHeight)
 				scrollTarget = totalHeight - screenHeight;
 			mScrollView.smoothScrollTo(0, scrollTarget);
-			android.widget.Toast.makeText(getApplicationContext(), 
-					"scrH " + screenHeight + " totH " + totalHeight + " target " + scrollTarget + " top " + imageView.getTop() + " bottom " + imageView.getBottom() + " HOH " + heightOfHeader,
-					android.widget.Toast.LENGTH_LONG).show();
 		}
 
 		@Override
@@ -281,10 +228,10 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			super.onProgressUpdate(values);
 			switch (values[1]) {
 			case 0:
-				mTvResult.setText("正在扫描Wifi");
+				mTvResult.setText("Scanning Wifi...");
 				break;
 			case 1:
-				mTvResult.setText("扫描成功，正在查询");
+				mTvResult.setText("Locating...");
 				break;
 			}
 			bar1.setProgress((int) (values[0] / expectedTime * 100));
@@ -310,7 +257,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			pos = result.getString("pos");
 			x = result.getString("x");
 			y = result.getString("y");
-			str = "房间: " + pos + " X: " + x + " Y: " + y;
+			str = "Position: " + pos;
 			System.out.println(str);
 
 			posX = Float.parseFloat(x) / (float) 6.5;

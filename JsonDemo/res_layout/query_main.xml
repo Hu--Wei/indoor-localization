@@ -6,8 +6,8 @@
 
     <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="#ffffff"
+        android:layout_height="wrap_content"
+        android:background="#CCCCCC"
         android:stretchColumns="1" >
 
         <TableRow
@@ -16,10 +16,10 @@
             android:gravity="center_horizontal" >
 
             <EditText
+                android:layout_marginTop="20dp"
                 android:id="@+id/et_serverip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_span="3"
                 android:hint="Server IP, eg.:101.5.155.101" />
         </TableRow>
 
@@ -32,12 +32,12 @@
                 android:id="@+id/btn_login"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/my_button"
                 android:padding="10dp"
-                android:text="Locate"
+                android:text="LOCATE"
                 android:textColor="#ffffff" />
         </TableRow>
-
 
         <TableRow
             android:layout_width="fill_parent"
@@ -49,6 +49,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:visibility="gone" />
         </TableRow>
 
@@ -61,25 +62,15 @@
                 android:id="@+id/tv_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_span="3"
-                android:background="#eee"
                 android:gravity="center_horizontal"
-                android:text="下面要显示服务器的返回值"
-                android:textSize="14sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <Button
-                android:id="@+id/btn_train"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_span="3"
-                android:text="测试" />
+                android:text=""
+                android:textColor="#0B3861"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="serif" />
         </TableRow>
 
         <ImageView
@@ -87,6 +78,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/map" />
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="" />
+        </TableRow>
     </TableLayout>
 
 </ScrollView>
