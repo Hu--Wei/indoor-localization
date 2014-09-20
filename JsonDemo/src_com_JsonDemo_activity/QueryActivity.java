@@ -42,6 +42,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.wifi.*;
@@ -56,10 +57,12 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 	private Button mBtnLogin;
 	private Button mBtnTrain;
+	
+	private ScrollView mScrollView;
+	private ImageView imageView;
 
 	private QueryTask mTask;
 	private TrainTask trainTask;
-
 	private float orientOfDevice;
 
 	// orientation sensor
@@ -69,6 +72,8 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	// progress bar
 	private ProgressBar bar1;
 	private double expectedTime = 4000;
+
+	private int heightOfHeader;
 
 	// position (left-down corner is 0, 0)
 	float posX;// 0 ~ 1
@@ -90,7 +95,9 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnTrain = (Button) findViewById(R.id.btn_train);
-
+		mScrollView = (ScrollView) findViewById(R.id.scrollView);
+		imageView = (ImageView) findViewById(R.id.img_map);
+				
 		// orientation sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -107,6 +114,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		receiver = new WifiReceiver();
 
+		heightOfHeader = mEtServerIP.getTop();
 		/**
 		 * 处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
 		 */
@@ -253,6 +261,19 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			// 在文本框中显示user信息
 			mTvResult.setText(result);
 			bar1.setVisibility(View.GONE);
+			int scrollTarget = (int) (imageView.getTop() * posY + 
+					imageView.getBottom() * (1 - posY));
+			int screenHeight = mScrollView.getBottom() - mScrollView.getTop();
+			scrollTarget -= screenHeight / 2;
+			int totalHeight = imageView.getBottom() - mEtServerIP.getTop();
+			if (scrollTarget < 0)
+				scrollTarget = 0;
+			if (scrollTarget > totalHeight - screenHeight)
+				scrollTarget = totalHeight - screenHeight;
+			mScrollView.smoothScrollTo(0, scrollTarget);
+			android.widget.Toast.makeText(getApplicationContext(), 
+					"scrH " + screenHeight + " totH " + totalHeight + " target " + scrollTarget + " top " + imageView.getTop() + " bottom " + imageView.getBottom() + " HOH " + heightOfHeader,
+					android.widget.Toast.LENGTH_LONG).show();
 		}
 
 		@Override
@@ -343,9 +364,9 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 		// offset is cumulative
 		// next draw displaces 50,100 from previous
-		ImageView imageView = (ImageView) findViewById(R.id.img_map);
 		imageView.setAdjustViewBounds(true);
 		imageView.setImageBitmap(mutableBitmap);
+
 	}
 
 	@Override
