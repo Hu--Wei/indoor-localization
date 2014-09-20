@@ -7,7 +7,7 @@ Positions of the files:
 /JsonDemo/src/....../InputActivity.java
 /JsonDemo/src/....../QueryActivity.java
 /JsonDemo/src/....../SplashScreen.java
-/JsonDema/AndroidManifest.xml
+/JsonDemo/AndroidManifest.xml
 /JsonDemo/res/drawable-hdpi/bar.png
 /JsonDemo/res/drawable-hdpi/map.png
 /JsonDemo/res/drawable-hdpi/ic_launcher.png
@@ -20,7 +20,6 @@ The format of Json transmission:
 "pos"	: (tag for position)
 "x"	: (x coordinate)
 "y"	: (y coordinate)
-"z"	: (z coordinate)
 "num"	: (# AP scanned)
 "0"	: (MAC + "&" + RSSI)
 "1"
