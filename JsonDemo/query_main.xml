@@ -81,19 +81,6 @@
                 android:text="测试" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" >
-
-            <EditText
-                android:id="@+id/editOrient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_span="3"
-                android:hint="Orientation of map, eg.: 90(east)"
-                android:text="0.0" />
-        </TableRow>
 
         <ImageView
             android:id="@+id/img_map"

@@ -48,8 +48,6 @@ import android.net.wifi.*;
 public class QueryActivity extends Activity implements SensorEventListener {
 	// server IP, for example 101.5.155.101:8080
 	private EditText mEtServerIP;
-	// the angle between the map and north (i.e.: east = 90)
-	private EditText inOrient;
 
 	private TextView mTvResult;
 
@@ -61,7 +59,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	private QueryTask mTask;
 	private TrainTask trainTask;
 
-	private float orientOfMap;
 	private float orientOfDevice;
 
 	// orientation sensor
@@ -71,6 +68,10 @@ public class QueryActivity extends Activity implements SensorEventListener {
 	// progress bar
 	private ProgressBar bar1;
 	private double expectedTime = 4000;
+	
+	//position (left-down corner is 0, 0)
+	float posX;//0 ~ 1
+	float posY;//0 ~ 1
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 		// 获取app的组件信息
 		mEtServerIP = (EditText) findViewById(R.id.et_serverip);
-		inOrient = (EditText) findViewById(R.id.editOrient);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mBtnTrain = (Button) findViewById(R.id.btn_train);
@@ -89,10 +89,15 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		// orientation sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-		// end of orientation
+		mSensorManager.registerListener(this, mOrientation,
+				SensorManager.SENSOR_DELAY_NORMAL);
 
 		// progress bar
 		bar1 = (ProgressBar) findViewById(R.id.bar1);
+		
+		//position initialization
+		posX = 0.5f;
+		posY = 0.5f;
 
 		/**
 		 * 处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
@@ -117,8 +122,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 				trainTask.execute();
 			}
 		});
-		mSensorManager.registerListener(this, mOrientation,
-				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	class TrainTask extends AsyncTask<String, Void, String> {
@@ -281,6 +284,9 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			y = result.getString("y");
 			str = "房间: " + pos + " X: " + x + " Y: " + y;
 			System.out.println(str);
+			
+			posX = Float.parseFloat(x) / (float) 6.5;
+			posY = Float.parseFloat(y) / (float) 16.5;
 
 			return str;
 		}
@@ -293,7 +299,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		}
 	}
 
-	public void displayMap(double posX, double posY) {
+	public void displayMap() {
 		BitmapFactory.Options myOptions = new BitmapFactory.Options();
 		myOptions.inDither = true;
 		myOptions.inScaled = false;
@@ -305,8 +311,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setColor(Color.RED);
-		// paint.setStyle(Paint.Style.STROKE);
-		// paint.setStrokeWidth(2);
 		paint.setStyle(Paint.Style.FILL);
 
 		Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
@@ -315,22 +319,18 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 		Canvas canvas = new Canvas(mutableBitmap);
 
-		orientOfMap = Float.parseFloat((inOrient).getText().toString());
-
 		Matrix matrix = new Matrix();
-		matrix.setRotate(orientOfDevice - orientOfMap + 180);
+		matrix.setRotate(orientOfDevice + 90);
 
 		Path path = new Path();
 		path.setFillType(Path.FillType.EVEN_ODD);
-		path.moveTo(0, -20);
-		path.lineTo(7, 0);
-		path.lineTo(-7, 0);
+		path.moveTo(0, -35);
+		path.lineTo(10, 0);
+		path.lineTo(-10, 0);
 		path.close();
 		path.transform(matrix);
-		path.offset(canvas.getWidth() * (float) posX, canvas.getHeight()
-				* (float) posY);
-		
-		
+		path.offset(canvas.getWidth() * (float) posX, canvas.getHeight() * (1 - (float) posY));
+
 		canvas.drawPath(path, paint);
 
 		// offset is cumulative
@@ -345,12 +345,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		// TODO Auto-generated method stub
 		float azimuth_angle = event.values[0];
 		orientOfDevice = azimuth_angle;
-		displayMap(0.5, 0.5);
-		// azimuth_angle is the angle between magnetic north and the device's y
-		// axis
-		// float pitch_angle = event.values[1];
-		// float roll_angle = event.values[2];
-		// Do something with these orientation angles.
+		displayMap();
 	}
 
 	@Override
