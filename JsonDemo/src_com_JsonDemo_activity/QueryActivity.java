@@ -40,7 +40,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -49,7 +48,7 @@ import android.net.wifi.*;
 
 public class QueryActivity extends Activity implements SensorEventListener {
 	// server IP, for example 101.5.155.101:8080
-	private TextView mEtServerIP;
+	//private TextView mEtServerIP;
 
 	private TextView mTvResult;
 
@@ -69,9 +68,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 	// progress bar
 	private ProgressBar bar1;
-	private double expectedTime = 4000;
-
-	private int heightOfHeader;
+	private double expectedTime = 2500;
 
 	// position (left-down corner is 0, 0)
 	float posX;// 0 ~ 1
@@ -89,7 +86,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 		setContentView(R.layout.query_main);
 
 		// 获取app的组件信息
-		mEtServerIP = (TextView) findViewById(R.id.et_serverip);
+		//mEtServerIP = (TextView) findViewById(R.id.et_serverip);
 		mTvResult = (TextView) findViewById(R.id.tv_result);
 		mBtnLogin = (Button) findViewById(R.id.btn_login);
 		mScrollView = (ScrollView) findViewById(R.id.scrollView);
@@ -110,8 +107,6 @@ public class QueryActivity extends Activity implements SensorEventListener {
 
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		receiver = new WifiReceiver();
-
-		heightOfHeader = mEtServerIP.getTop();
 
 		/**
 		 * 处理btn_login的响应任务，启动一个MyTask，处理数据库的查询
@@ -198,8 +193,7 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			}
 			bar1.setProgress(100);
 			duration = System.currentTimeMillis() - startTime;
-			if (duration > 3000)
-				expectedTime = duration;
+			expectedTime = duration;
 			// 返回包好user信息的str
 			unregisterReceiver(receiver);
 			return str;
@@ -212,11 +206,12 @@ public class QueryActivity extends Activity implements SensorEventListener {
 			// 在文本框中显示user信息
 			mTvResult.setText(result);
 			bar1.setVisibility(View.GONE);
+			
 			int scrollTarget = (int) (imageView.getTop() * posY + imageView
 					.getBottom() * (1 - posY));
 			int screenHeight = mScrollView.getBottom() - mScrollView.getTop();
 			scrollTarget -= screenHeight / 2;
-			int totalHeight = imageView.getBottom() - mEtServerIP.getTop();
+			int totalHeight = imageView.getBottom() - mBtnLogin.getTop();
 			if (scrollTarget < 0)
 				scrollTarget = 0;
 			if (scrollTarget > totalHeight - screenHeight)
