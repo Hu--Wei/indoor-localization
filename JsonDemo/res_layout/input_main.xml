@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_top_bg"
-                android:hint="Position"
+                android:hint="Room"
                 android:padding="10dp"
                 android:textColorHint="#bbbbbb" />
         </TableRow>
